@@ -1,8 +1,8 @@
 [
 {
-  "directory": "/home/darren/Documents/raytracing/raytracing-cpu/build",
-  "command": "/usr/bin/clang++ -g -o CMakeFiles/raytracer-cpu.dir/src/main.cpp.o -c /home/darren/Documents/raytracing/raytracing-cpu/src/main.cpp",
-  "file": "/home/darren/Documents/raytracing/raytracing-cpu/src/main.cpp",
-  "output": "CMakeFiles/raytracer-cpu.dir/src/main.cpp.o"
+  "directory": "/home/darren/Documents/raytracing/raytracing-gpu/build",
+  "command": "/usr/local/cuda-12.1/bin/nvcc -forward-unknown-to-host-compiler -g -std=c++14 -x cu -c /home/darren/Documents/raytracing/raytracing-gpu/src/main.cu -o CMakeFiles/raytracer-gpu.dir/src/main.cu.o",
+  "file": "/home/darren/Documents/raytracing/raytracing-gpu/src/main.cu",
+  "output": "CMakeFiles/raytracer-gpu.dir/src/main.cu.o"
 }
 ]

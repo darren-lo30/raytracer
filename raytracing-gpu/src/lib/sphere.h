@@ -7,26 +7,24 @@
 
 class Sphere : public Hittable { 
   public: 
-    Sphere() {}
-    Sphere(point3 center, double radius, shared_ptr<Material> mat) : center(center), radius(radius), mat(mat) {}
+    __host__ __device__ Sphere() {}
+    __host__ __device__ Sphere(point3 center, float radius, Material* mat) : center(center), radius(radius), mat(mat) {}
 
-    virtual bool hit(
-      const ray &r, double t_min, double t_max, HitRecord &rec
-    ) const override {
+    __device__ virtual bool hit(const ray &r, float t_min, float t_max, HitRecord &rec) const override {
       vec3 oc = r.origin() - center;
-      double a = r.direction().length_squared();
-      double half_b = dot(r.direction(), oc);
-      double c = oc.length_squared() - radius * radius;
-      double discriminant = half_b * half_b - a*c;
+      float a = r.direction().length_squared();
+      float half_b = dot(r.direction(), oc);
+      float c = oc.length_squared() - radius * radius;
+      float discriminant = half_b * half_b - a*c;
 
       if(discriminant < 0) {
         return false;
       } 
 
-      double sqrtd = sqrt(discriminant);
+      float sqrtd = sqrt(discriminant);
       
 
-      double t = (-half_b - sqrtd) / a;
+      float t = (-half_b - sqrtd) / a;
       if(t < t_min || t > t_max) {
         t = (-half_b + sqrtd) / a;
         if(t < t_min || t > t_max) return false;
@@ -43,8 +41,8 @@ class Sphere : public Hittable {
     
   private:
     point3 center;
-    double radius;
-    shared_ptr<Material> mat;
+    float radius;
+    Material *mat;
 
 };
 #endif

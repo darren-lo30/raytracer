@@ -7,16 +7,16 @@
 
 class Metal : public Material {
   public:
-    Metal(const color &color, double fuzziness) : albedo(color), fuzziness(fuzziness) {}
-    virtual bool scatter(const ray& r, const HitRecord& rec, color& attentuation, ray& scattered) const override {
+    __host__ __device__ Metal(const color &color, float fuzziness) : albedo(color), fuzziness(fuzziness) {}
+    __device__ virtual bool scatter(const ray& r, const HitRecord& rec, color& attentuation, ray& scattered, curandState* state) const override {
       vec3 reflected = unit(reflect(r.direction(), rec.normal)) ;
-      scattered = ray(rec.p, reflected + fuzziness * random_in_unit_sphere());
+      scattered = ray(rec.p, reflected + fuzziness * random_in_unit_sphere(state));
       attentuation = albedo;
       return dot(scattered.direction(), rec.normal) > 0;
     }
   private:
     color albedo;
-    double fuzziness;
+    float fuzziness;
 };
 
 #endif

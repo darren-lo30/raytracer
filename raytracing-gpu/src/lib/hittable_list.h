@@ -6,38 +6,47 @@
 #include <memory>
 #include <vector>
 
-using std::shared_ptr;
-using std::make_shared;
-using std::vector;
-
 class HittableList : public Hittable {
   public:
-    HittableList() {}
-    HittableList(shared_ptr<Hittable> object) { add(object); }
+    __host__ __device__ HittableList() { 
+      idx = 0;
+    }
+    
+    __host__ __device__ HittableList(int size, Hittable **objects) {
+      idx = 0;
+      this->size = size;
+      this->objects = objects;
+    }
 
-    void clear() { objects.clear(); }
-    void add(shared_ptr<Hittable> object) { objects.push_back(object); }
+    __host__ __device__ bool add(Hittable *object) {
+      if(idx < size) {
+        objects[idx++] = object;
+        return true;
+      }
 
-    virtual bool hit(const ray& r, double t_min, double t_max, HitRecord& rec) const override;
+      return false;
+    }
 
-  public:
-    vector<shared_ptr<Hittable>> objects;
+    __device__ virtual bool hit(const ray &r, float t_min, float t_max, HitRecord &rec) const override {
+      HitRecord temp_rec;
+      float closest_t = t_max;
+      bool object_hit = false;
+
+      for (int i = 0; i<size; ++i) {
+        if(objects[i] && objects[i]->hit(r, t_min, closest_t, temp_rec)) {
+          object_hit = true;
+          closest_t = temp_rec.t;
+          rec = temp_rec;
+        }    
+      }
+
+      return object_hit;
+    }
+
+    int idx;
+    int size;
+    Hittable **objects;
 };
 
-bool HittableList::hit(const ray& r, double t_min, double t_max, HitRecord& rec) const {
-  HitRecord temp_rec;
-  double closest_t = t_max;
-  bool object_hit = false;
-
-  for (const auto& object: objects) {
-    if(object->hit(r, t_min, closest_t, temp_rec)) {
-      object_hit = true;
-      closest_t = temp_rec.t;
-      rec = temp_rec;
-    }    
-  }
-
-  return object_hit;
-}
 
 #endif

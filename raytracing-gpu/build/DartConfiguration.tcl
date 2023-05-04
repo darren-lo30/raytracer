@@ -4,8 +4,8 @@
 
 
 # Configuration directories and files
-SourceDirectory: /home/darren/Documents/raytracing/raytracing-cpu
-BuildDirectory: /home/darren/Documents/raytracing/raytracing-cpu/build
+SourceDirectory: /home/darren/Documents/raytracing/raytracing-gpu
+BuildDirectory: /home/darren/Documents/raytracing/raytracing-gpu/build
 
 # Where to place the cost data store
 CostDataFile: 
@@ -27,7 +27,7 @@ SubmitInactivityTimeout:
 NightlyStartTime: 00:00:00 EDT
 
 # Commands for the build/test/submit cycle
-ConfigureCommand: "/home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/cmake" "/home/darren/Documents/raytracing/raytracing-cpu"
+ConfigureCommand: "/home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/cmake" "/home/darren/Documents/raytracing/raytracing-gpu"
 MakeCommand: /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/cmake --build . --config "${CTEST_CONFIGURATION_TYPE}"
 DefaultCTestConfigurationType: Release
 

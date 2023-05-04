@@ -5,36 +5,62 @@
 #include <limits>
 #include <memory>
 #include <random>
+#include <curand_kernel.h>
+#include "vec3.h"
 
-const double infinity = std::numeric_limits<double>::infinity();
-const double pi = 3.1415926535897932385;
+
+const float infinity = std::numeric_limits<float>::infinity();
+const float pi = 3.1415926535;
 
 // Utility Functions
-
-inline double degrees_to_radians(double degrees) {
+__host__ __device__ inline float degrees_to_radians(float degrees) {
   return degrees * pi / 180.0;
 }
 
-inline double random_double() {
-  static std::uniform_real_distribution<double> distribution(0.0, 1.0);
-  static std::mt19937 generator;
-  return distribution(generator);
-}
-
-inline double random_double(double min, double max) {
-  return min + random_double() * (max - min);
-}
-
-inline double clamp(double x, double min, double max) {
+__host__ __device__ inline float clamp(float x, float min, float max) {
   if(x < min) return min;
   if(x > max) return max;
   return x;
 }
 
-inline double sign(double x) {
-  if(x > 0) return 1;
-  if(x < 0) return -1;
-  return 0;
+__device__ inline float random_float(curandState *state) {
+  return curand_uniform(state);
 }
+
+__device__ inline float random_float(curandState *state, float min, float max) {
+  return min + random_float(state) * (max - min);
+}
+
+__device__ inline vec3 random_vec3(curandState *state) {
+  return vec3(random_float(state), random_float(state), random_float(state));
+}
+
+__device__ inline vec3 random_vec3(curandState *state, float min, float max) {
+  return vec3(random_float(state, min, max), random_float(state, min, max), random_float(state, min, max));
+}
+
+__device__ inline vec3 random_in_unit_sphere(curandState *state) {
+  vec3 rand;
+  do {
+    rand = random_vec3(state, -1, 1);
+  } while(rand.length_squared() > 1);
+
+  return rand;
+}
+
+__device__ vec3 random_unit_vector(curandState *state) {
+  return unit(random_in_unit_sphere(state));
+}
+
+__device__ vec3 random_in_unit_circle(curandState *state) {
+  vec3 rand;
+  do {
+    rand = vec3(random_float(state, -1, 1), random_float(state, -1, 1), 0);
+  } while(rand.length_squared() >= 1);
+
+  return rand;
+}
+
+
 
 #endif

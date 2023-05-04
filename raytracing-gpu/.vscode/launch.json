@@ -5,7 +5,7 @@
       "type": "cppdbg",
       "preLaunchTask": "CMake: build",
       "request": "launch",
-      "program": "${workspaceFolder}/build/raytracer-cpu",
+      "program": "${workspaceFolder}/build/raytracer-gpu",
       "args": [],
       "cwd": "${workspaceFolder}",
       "stopAtEntry": false,

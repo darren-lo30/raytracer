@@ -11,7 +11,7 @@
 # =============================================================================
 
 # =============================================================================
-# Project: raytracer-cpu
+# Project: raytracer-gpu
 # Configurations: Debug
 # =============================================================================
 
@@ -39,7 +39,7 @@ include CMakeFiles/rules.ninja
 #############################################
 # Logical path to working directory; prefix for absolute paths.
 
-cmake_ninja_workdir = /home/darren/Documents/raytracing/raytracing-cpu/build/
+cmake_ninja_workdir = /home/darren/Documents/raytracing/raytracing-gpu/build/
 
 #############################################
 # Utility command for Experimental
@@ -209,43 +209,43 @@ build ContinuousMemCheck: phony CMakeFiles/ContinuousMemCheck
 build ContinuousSubmit: phony CMakeFiles/ContinuousSubmit
 
 # =============================================================================
-# Object build statements for EXECUTABLE target raytracer-cpu
+# Object build statements for EXECUTABLE target raytracer-gpu
 
 
 #############################################
-# Order-only phony target for raytracer-cpu
+# Order-only phony target for raytracer-gpu
 
-build cmake_object_order_depends_target_raytracer-cpu: phony || CMakeFiles/raytracer-cpu.dir
+build cmake_object_order_depends_target_raytracer-gpu: phony || CMakeFiles/raytracer-gpu.dir
 
-build CMakeFiles/raytracer-cpu.dir/src/main.cpp.o: CXX_COMPILER__raytracer-cpu_unscanned_Debug /home/darren/Documents/raytracing/raytracing-cpu/src/main.cpp || cmake_object_order_depends_target_raytracer-cpu
-  DEP_FILE = CMakeFiles/raytracer-cpu.dir/src/main.cpp.o.d
-  FLAGS = -g
-  OBJECT_DIR = CMakeFiles/raytracer-cpu.dir
-  OBJECT_FILE_DIR = CMakeFiles/raytracer-cpu.dir/src
+build CMakeFiles/raytracer-gpu.dir/src/main.cu.o: CUDA_COMPILER__raytracer-gpu_unscanned_Debug /home/darren/Documents/raytracing/raytracing-gpu/src/main.cu || cmake_object_order_depends_target_raytracer-gpu
+  DEP_FILE = CMakeFiles/raytracer-gpu.dir/src/main.cu.o.d
+  FLAGS = -g -std=c++14
+  OBJECT_DIR = CMakeFiles/raytracer-gpu.dir
+  OBJECT_FILE_DIR = CMakeFiles/raytracer-gpu.dir/src
 
 
 # =============================================================================
-# Link build statements for EXECUTABLE target raytracer-cpu
+# Link build statements for EXECUTABLE target raytracer-gpu
 
 
 #############################################
-# Link the executable raytracer-cpu
+# Link the executable raytracer-gpu
 
-build raytracer-cpu: CXX_EXECUTABLE_LINKER__raytracer-cpu_Debug CMakeFiles/raytracer-cpu.dir/src/main.cpp.o
+build raytracer-gpu: CUDA_EXECUTABLE_LINKER__raytracer-gpu_Debug CMakeFiles/raytracer-gpu.dir/src/main.cu.o
   FLAGS = -g
-  LINK_FLAGS = -rdynamic
-  OBJECT_DIR = CMakeFiles/raytracer-cpu.dir
+  LINK_LIBRARIES = -lcudadevrt  -lcudart_static  -lrt  -lpthread  -ldl
+  OBJECT_DIR = CMakeFiles/raytracer-gpu.dir
   POST_BUILD = :
   PRE_LINK = :
-  TARGET_FILE = raytracer-cpu
-  TARGET_PDB = raytracer-cpu.dbg
+  TARGET_FILE = raytracer-gpu
+  TARGET_PDB = raytracer-gpu.dbg
 
 
 #############################################
 # Utility command for package
 
 build CMakeFiles/package.util: CUSTOM_COMMAND all
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/cpack --config ./CPackConfig.cmake
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/cpack --config ./CPackConfig.cmake
   DESC = Run CPack packaging tool...
   pool = console
   restat = 1
@@ -257,7 +257,7 @@ build package: phony CMakeFiles/package.util
 # Utility command for package_source
 
 build CMakeFiles/package_source.util: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/cpack --config ./CPackSourceConfig.cmake /home/darren/Documents/raytracing/raytracing-cpu/build/CPackSourceConfig.cmake
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/cpack --config ./CPackSourceConfig.cmake /home/darren/Documents/raytracing/raytracing-gpu/build/CPackSourceConfig.cmake
   DESC = Run CPack packaging tool for source...
   pool = console
   restat = 1
@@ -269,7 +269,7 @@ build package_source: phony CMakeFiles/package_source.util
 # Utility command for test
 
 build CMakeFiles/test.util: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest --force-new-ctest-process
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest --force-new-ctest-process
   DESC = Running tests...
   pool = console
   restat = 1
@@ -281,7 +281,7 @@ build test: phony CMakeFiles/test.util
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
   DESC = No interactive CMake dialog available...
   restat = 1
 
@@ -292,7 +292,7 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/cmake --regenerate-during-build -S/home/darren/Documents/raytracing/raytracing-cpu -B/home/darren/Documents/raytracing/raytracing-cpu/build
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/cmake --regenerate-during-build -S/home/darren/Documents/raytracing/raytracing-gpu -B/home/darren/Documents/raytracing/raytracing-gpu/build
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -304,7 +304,7 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 # Custom command for CMakeFiles/Experimental
 
 build CMakeFiles/Experimental | ${cmake_ninja_workdir}CMakeFiles/Experimental: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D Experimental
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D Experimental
   pool = console
 
 
@@ -312,7 +312,7 @@ build CMakeFiles/Experimental | ${cmake_ninja_workdir}CMakeFiles/Experimental: C
 # Custom command for CMakeFiles/Nightly
 
 build CMakeFiles/Nightly | ${cmake_ninja_workdir}CMakeFiles/Nightly: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D Nightly
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D Nightly
   pool = console
 
 
@@ -320,7 +320,7 @@ build CMakeFiles/Nightly | ${cmake_ninja_workdir}CMakeFiles/Nightly: CUSTOM_COMM
 # Custom command for CMakeFiles/Continuous
 
 build CMakeFiles/Continuous | ${cmake_ninja_workdir}CMakeFiles/Continuous: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D Continuous
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D Continuous
   pool = console
 
 
@@ -328,7 +328,7 @@ build CMakeFiles/Continuous | ${cmake_ninja_workdir}CMakeFiles/Continuous: CUSTO
 # Custom command for CMakeFiles/NightlyMemoryCheck
 
 build CMakeFiles/NightlyMemoryCheck | ${cmake_ninja_workdir}CMakeFiles/NightlyMemoryCheck: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D NightlyMemoryCheck
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D NightlyMemoryCheck
   pool = console
 
 
@@ -336,7 +336,7 @@ build CMakeFiles/NightlyMemoryCheck | ${cmake_ninja_workdir}CMakeFiles/NightlyMe
 # Custom command for CMakeFiles/NightlyStart
 
 build CMakeFiles/NightlyStart | ${cmake_ninja_workdir}CMakeFiles/NightlyStart: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D NightlyStart
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D NightlyStart
   pool = console
 
 
@@ -344,7 +344,7 @@ build CMakeFiles/NightlyStart | ${cmake_ninja_workdir}CMakeFiles/NightlyStart: C
 # Custom command for CMakeFiles/NightlyUpdate
 
 build CMakeFiles/NightlyUpdate | ${cmake_ninja_workdir}CMakeFiles/NightlyUpdate: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D NightlyUpdate
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D NightlyUpdate
   pool = console
 
 
@@ -352,7 +352,7 @@ build CMakeFiles/NightlyUpdate | ${cmake_ninja_workdir}CMakeFiles/NightlyUpdate:
 # Custom command for CMakeFiles/NightlyConfigure
 
 build CMakeFiles/NightlyConfigure | ${cmake_ninja_workdir}CMakeFiles/NightlyConfigure: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D NightlyConfigure
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D NightlyConfigure
   pool = console
 
 
@@ -360,7 +360,7 @@ build CMakeFiles/NightlyConfigure | ${cmake_ninja_workdir}CMakeFiles/NightlyConf
 # Custom command for CMakeFiles/NightlyBuild
 
 build CMakeFiles/NightlyBuild | ${cmake_ninja_workdir}CMakeFiles/NightlyBuild: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D NightlyBuild
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D NightlyBuild
   pool = console
 
 
@@ -368,7 +368,7 @@ build CMakeFiles/NightlyBuild | ${cmake_ninja_workdir}CMakeFiles/NightlyBuild: C
 # Custom command for CMakeFiles/NightlyTest
 
 build CMakeFiles/NightlyTest | ${cmake_ninja_workdir}CMakeFiles/NightlyTest: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D NightlyTest
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D NightlyTest
   pool = console
 
 
@@ -376,7 +376,7 @@ build CMakeFiles/NightlyTest | ${cmake_ninja_workdir}CMakeFiles/NightlyTest: CUS
 # Custom command for CMakeFiles/NightlyCoverage
 
 build CMakeFiles/NightlyCoverage | ${cmake_ninja_workdir}CMakeFiles/NightlyCoverage: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D NightlyCoverage
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D NightlyCoverage
   pool = console
 
 
@@ -384,7 +384,7 @@ build CMakeFiles/NightlyCoverage | ${cmake_ninja_workdir}CMakeFiles/NightlyCover
 # Custom command for CMakeFiles/NightlyMemCheck
 
 build CMakeFiles/NightlyMemCheck | ${cmake_ninja_workdir}CMakeFiles/NightlyMemCheck: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D NightlyMemCheck
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D NightlyMemCheck
   pool = console
 
 
@@ -392,7 +392,7 @@ build CMakeFiles/NightlyMemCheck | ${cmake_ninja_workdir}CMakeFiles/NightlyMemCh
 # Custom command for CMakeFiles/NightlySubmit
 
 build CMakeFiles/NightlySubmit | ${cmake_ninja_workdir}CMakeFiles/NightlySubmit: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D NightlySubmit
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D NightlySubmit
   pool = console
 
 
@@ -400,7 +400,7 @@ build CMakeFiles/NightlySubmit | ${cmake_ninja_workdir}CMakeFiles/NightlySubmit:
 # Custom command for CMakeFiles/ExperimentalStart
 
 build CMakeFiles/ExperimentalStart | ${cmake_ninja_workdir}CMakeFiles/ExperimentalStart: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ExperimentalStart
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ExperimentalStart
   pool = console
 
 
@@ -408,7 +408,7 @@ build CMakeFiles/ExperimentalStart | ${cmake_ninja_workdir}CMakeFiles/Experiment
 # Custom command for CMakeFiles/ExperimentalUpdate
 
 build CMakeFiles/ExperimentalUpdate | ${cmake_ninja_workdir}CMakeFiles/ExperimentalUpdate: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ExperimentalUpdate
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ExperimentalUpdate
   pool = console
 
 
@@ -416,7 +416,7 @@ build CMakeFiles/ExperimentalUpdate | ${cmake_ninja_workdir}CMakeFiles/Experimen
 # Custom command for CMakeFiles/ExperimentalConfigure
 
 build CMakeFiles/ExperimentalConfigure | ${cmake_ninja_workdir}CMakeFiles/ExperimentalConfigure: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ExperimentalConfigure
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ExperimentalConfigure
   pool = console
 
 
@@ -424,7 +424,7 @@ build CMakeFiles/ExperimentalConfigure | ${cmake_ninja_workdir}CMakeFiles/Experi
 # Custom command for CMakeFiles/ExperimentalBuild
 
 build CMakeFiles/ExperimentalBuild | ${cmake_ninja_workdir}CMakeFiles/ExperimentalBuild: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ExperimentalBuild
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ExperimentalBuild
   pool = console
 
 
@@ -432,7 +432,7 @@ build CMakeFiles/ExperimentalBuild | ${cmake_ninja_workdir}CMakeFiles/Experiment
 # Custom command for CMakeFiles/ExperimentalTest
 
 build CMakeFiles/ExperimentalTest | ${cmake_ninja_workdir}CMakeFiles/ExperimentalTest: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ExperimentalTest
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ExperimentalTest
   pool = console
 
 
@@ -440,7 +440,7 @@ build CMakeFiles/ExperimentalTest | ${cmake_ninja_workdir}CMakeFiles/Experimenta
 # Custom command for CMakeFiles/ExperimentalCoverage
 
 build CMakeFiles/ExperimentalCoverage | ${cmake_ninja_workdir}CMakeFiles/ExperimentalCoverage: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ExperimentalCoverage
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ExperimentalCoverage
   pool = console
 
 
@@ -448,7 +448,7 @@ build CMakeFiles/ExperimentalCoverage | ${cmake_ninja_workdir}CMakeFiles/Experim
 # Custom command for CMakeFiles/ExperimentalMemCheck
 
 build CMakeFiles/ExperimentalMemCheck | ${cmake_ninja_workdir}CMakeFiles/ExperimentalMemCheck: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ExperimentalMemCheck
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ExperimentalMemCheck
   pool = console
 
 
@@ -456,7 +456,7 @@ build CMakeFiles/ExperimentalMemCheck | ${cmake_ninja_workdir}CMakeFiles/Experim
 # Custom command for CMakeFiles/ExperimentalSubmit
 
 build CMakeFiles/ExperimentalSubmit | ${cmake_ninja_workdir}CMakeFiles/ExperimentalSubmit: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ExperimentalSubmit
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ExperimentalSubmit
   pool = console
 
 
@@ -464,7 +464,7 @@ build CMakeFiles/ExperimentalSubmit | ${cmake_ninja_workdir}CMakeFiles/Experimen
 # Custom command for CMakeFiles/ContinuousStart
 
 build CMakeFiles/ContinuousStart | ${cmake_ninja_workdir}CMakeFiles/ContinuousStart: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ContinuousStart
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ContinuousStart
   pool = console
 
 
@@ -472,7 +472,7 @@ build CMakeFiles/ContinuousStart | ${cmake_ninja_workdir}CMakeFiles/ContinuousSt
 # Custom command for CMakeFiles/ContinuousUpdate
 
 build CMakeFiles/ContinuousUpdate | ${cmake_ninja_workdir}CMakeFiles/ContinuousUpdate: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ContinuousUpdate
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ContinuousUpdate
   pool = console
 
 
@@ -480,7 +480,7 @@ build CMakeFiles/ContinuousUpdate | ${cmake_ninja_workdir}CMakeFiles/ContinuousU
 # Custom command for CMakeFiles/ContinuousConfigure
 
 build CMakeFiles/ContinuousConfigure | ${cmake_ninja_workdir}CMakeFiles/ContinuousConfigure: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ContinuousConfigure
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ContinuousConfigure
   pool = console
 
 
@@ -488,7 +488,7 @@ build CMakeFiles/ContinuousConfigure | ${cmake_ninja_workdir}CMakeFiles/Continuo
 # Custom command for CMakeFiles/ContinuousBuild
 
 build CMakeFiles/ContinuousBuild | ${cmake_ninja_workdir}CMakeFiles/ContinuousBuild: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ContinuousBuild
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ContinuousBuild
   pool = console
 
 
@@ -496,7 +496,7 @@ build CMakeFiles/ContinuousBuild | ${cmake_ninja_workdir}CMakeFiles/ContinuousBu
 # Custom command for CMakeFiles/ContinuousTest
 
 build CMakeFiles/ContinuousTest | ${cmake_ninja_workdir}CMakeFiles/ContinuousTest: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ContinuousTest
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ContinuousTest
   pool = console
 
 
@@ -504,7 +504,7 @@ build CMakeFiles/ContinuousTest | ${cmake_ninja_workdir}CMakeFiles/ContinuousTes
 # Custom command for CMakeFiles/ContinuousCoverage
 
 build CMakeFiles/ContinuousCoverage | ${cmake_ninja_workdir}CMakeFiles/ContinuousCoverage: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ContinuousCoverage
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ContinuousCoverage
   pool = console
 
 
@@ -512,7 +512,7 @@ build CMakeFiles/ContinuousCoverage | ${cmake_ninja_workdir}CMakeFiles/Continuou
 # Custom command for CMakeFiles/ContinuousMemCheck
 
 build CMakeFiles/ContinuousMemCheck | ${cmake_ninja_workdir}CMakeFiles/ContinuousMemCheck: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ContinuousMemCheck
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ContinuousMemCheck
   pool = console
 
 
@@ -520,7 +520,7 @@ build CMakeFiles/ContinuousMemCheck | ${cmake_ninja_workdir}CMakeFiles/Continuou
 # Custom command for CMakeFiles/ContinuousSubmit
 
 build CMakeFiles/ContinuousSubmit | ${cmake_ninja_workdir}CMakeFiles/ContinuousSubmit: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-cpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ContinuousSubmit
+  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/ctest -D ContinuousSubmit
   pool = console
 
 # =============================================================================
@@ -532,14 +532,9 @@ build CMakeFiles/ContinuousSubmit | ${cmake_ninja_workdir}CMakeFiles/ContinuousS
 # =============================================================================
 
 #############################################
-# Folder: /home/darren/Documents/raytracing/raytracing-cpu/build
+# Folder: /home/darren/Documents/raytracing/raytracing-gpu/build
 
-build all: phony raytracer-cpu
-
-# =============================================================================
-# Unknown Build Time Dependencies.
-# Tell Ninja that they may appear as side effects of build rules
-# otherwise ordered by order-only dependencies.
+build all: phony raytracer-gpu
 
 # =============================================================================
 # Built-in targets
@@ -548,14 +543,14 @@ build all: phony raytracer-cpu
 #############################################
 # Re-run CMake if any of its inputs changed.
 
-build build.ninja: RERUN_CMAKE | /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeCInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeCXXInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeCommonLanguageInclude.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeGenericSystem.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeInitializeConfigs.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeLanguageInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeSystemSpecificInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeSystemSpecificInitialize.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CPack.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CPackComponent.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CTest.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CTestTargets.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CTestUseLaunchers.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/CMakeCommonCompilerMacros.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/Clang-C.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/Clang-CXX.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/Clang.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/GNU.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/DartConfiguration.tcl.in /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-Clang-C.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-Clang-CXX.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-GNU-C.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-GNU-CXX.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-GNU.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/UnixPaths.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Templates/CPackConfig.cmake.in /home/darren/Documents/raytracing/raytracing-cpu/CMakeLists.txt CMakeCache.txt CMakeFiles/3.26.1/CMakeCCompiler.cmake CMakeFiles/3.26.1/CMakeCXXCompiler.cmake CMakeFiles/3.26.1/CMakeSystem.cmake
+build build.ninja: RERUN_CMAKE | /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeCUDAInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeCXXInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeCommonLanguageInclude.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeGenericSystem.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeInitializeConfigs.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeLanguageInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeSystemSpecificInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeSystemSpecificInitialize.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CPack.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CPackComponent.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CTest.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CTestTargets.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CTestUseLaunchers.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/CMakeCommonCompilerMacros.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/Clang-CXX.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/Clang.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/GNU.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/NVIDIA-CUDA.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/DartConfiguration.tcl.in /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-Clang-CXX.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-GNU-CXX.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-GNU.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/UnixPaths.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Templates/CPackConfig.cmake.in /home/darren/Documents/raytracing/raytracing-gpu/CMakeLists.txt CMakeCache.txt CMakeFiles/3.26.1/CMakeCUDACompiler.cmake CMakeFiles/3.26.1/CMakeCXXCompiler.cmake CMakeFiles/3.26.1/CMakeSystem.cmake
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
-build /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeCInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeCXXInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeCommonLanguageInclude.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeGenericSystem.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeInitializeConfigs.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeLanguageInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeSystemSpecificInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeSystemSpecificInitialize.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CPack.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CPackComponent.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CTest.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CTestTargets.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CTestUseLaunchers.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/CMakeCommonCompilerMacros.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/Clang-C.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/Clang-CXX.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/Clang.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/GNU.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/DartConfiguration.tcl.in /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-Clang-C.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-Clang-CXX.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-GNU-C.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-GNU-CXX.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-GNU.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/UnixPaths.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Templates/CPackConfig.cmake.in /home/darren/Documents/raytracing/raytracing-cpu/CMakeLists.txt CMakeCache.txt CMakeFiles/3.26.1/CMakeCCompiler.cmake CMakeFiles/3.26.1/CMakeCXXCompiler.cmake CMakeFiles/3.26.1/CMakeSystem.cmake: phony
+build /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeCUDAInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeCXXInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeCommonLanguageInclude.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeGenericSystem.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeInitializeConfigs.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeLanguageInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeSystemSpecificInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeSystemSpecificInitialize.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CPack.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CPackComponent.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CTest.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CTestTargets.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CTestUseLaunchers.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/CMakeCommonCompilerMacros.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/Clang-CXX.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/Clang.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/GNU.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/NVIDIA-CUDA.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/DartConfiguration.tcl.in /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-Clang-CXX.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-GNU-CXX.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-GNU.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/UnixPaths.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Templates/CPackConfig.cmake.in /home/darren/Documents/raytracing/raytracing-gpu/CMakeLists.txt CMakeCache.txt CMakeFiles/3.26.1/CMakeCUDACompiler.cmake CMakeFiles/3.26.1/CMakeCXXCompiler.cmake CMakeFiles/3.26.1/CMakeSystem.cmake: phony
 
 
 #############################################
