@@ -52,7 +52,8 @@
     "ratio": "cpp",
     "set": "cpp",
     "mutex": "cpp",
-    "thread": "cpp"
+    "thread": "cpp",
+    "__config": "cpp"
   },
 
 }

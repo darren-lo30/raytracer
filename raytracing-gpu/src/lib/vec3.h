@@ -1,7 +1,5 @@
-#ifndef VEC3_H
-#define VEC3_H
+#pragma once
 
-#include "utils.h"
 #include <cmath>
 #include <iostream>
 
@@ -64,55 +62,53 @@ class vec3 {
 using point3 = vec3;
 using color = vec3;
 
-inline std::ostream& operator<<(std::ostream &out, const vec3 &v) {
+static inline std::ostream& operator<<(std::ostream &out, const vec3 &v) {
   return out << v.x() << " " << v.y() << " " << v.z();
 }
 
-__host__ __device__ inline vec3 operator+(const vec3 &u, const vec3 &v) {
+__host__ __device__ static inline vec3 operator+(const vec3 &u, const vec3 &v) {
   return vec3(u.x() + v.x(), u.y() + v.y(), u.z() + v.z());
 }
 
-__host__ __device__ inline vec3 operator-(const vec3 &u, const vec3 &v) {
+__host__ __device__ static inline vec3 operator-(const vec3 &u, const vec3 &v) {
   return vec3(u.x() - v.x(), u.y() - v.y(), u.z() - v.z());
 }
 
-__host__ __device__ inline vec3 operator*(const vec3 &u, const vec3 &v) {
+__host__ __device__ static inline vec3 operator*(const vec3 &u, const vec3 &v) {
   return vec3(u.x() * v.x(), u.y() * v.y(), u.z() * v.z());
 }
 
-__host__ __device__ inline vec3 operator*(const float &s, const vec3 &u) {
+__host__ __device__ static inline vec3 operator*(const float &s, const vec3 &u) {
   return vec3(u.x() * s, u.y() * s, u.z() * s);
 }
 
-__host__ __device__ inline vec3 operator/(const vec3 &u, const float &s) {
+__host__ __device__ static inline vec3 operator/(const vec3 &u, const float &s) {
   return vec3(u.x() / s, u.y() / s, u.z() / s);
 }
 
-__host__ __device__ inline float dot(const vec3 &u, const vec3 &v) {
+__host__ __device__ static inline float dot(const vec3 &u, const vec3 &v) {
   return u.x() * v.x() + u.y() * v.y() + u.z() * v.z();
 }
 
-__host__ __device__ inline vec3 cross(const vec3 &u, const vec3 &v) {
+__host__ __device__ static inline vec3 cross(const vec3 &u, const vec3 &v) {
   return vec3(
     u.y()*v.z() - u.z()*v.y(),
     u.z()*v.x() - u.x()*v.z(),
     u.x()*v.y() - u.y()*v.x());
 }
 
-__host__ __device__ inline vec3 reflect(const vec3 &v, const vec3 &axis) {
+__host__ __device__ static inline vec3 reflect(const vec3 &v, const vec3 &axis) {
   return v - 2*dot(v, axis)*axis;
 }
 
-__host__ __device__ inline vec3 unit(const vec3 &u) {
+__host__ __device__ static inline vec3 unit(const vec3 &u) {
   return u / u.length();
 }
 
-__host__ __device__ vec3 refract(const vec3& unit_v, const vec3& n, float etai_over_etat) {
+__host__ __device__ static inline vec3 refract(const vec3& unit_v, const vec3& n, float etai_over_etat) {
   float cos_theta = dot(-unit_v, n);
   vec3 r_perpendicular = etai_over_etat * (unit_v + cos_theta * n);
   vec3 r_parallel = -sqrt(1 - r_perpendicular.length_squared()) * n;
 
   return r_perpendicular + r_parallel;
 }
-
-#endif

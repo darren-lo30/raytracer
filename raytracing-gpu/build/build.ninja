@@ -18,7 +18,7 @@
 #############################################
 # Minimal version of Ninja required by this file
 
-ninja_required_version = 1.5
+ninja_required_version = 1.8
 
 
 #############################################
@@ -40,6 +40,100 @@ include CMakeFiles/rules.ninja
 # Logical path to working directory; prefix for absolute paths.
 
 cmake_ninja_workdir = /home/darren/Documents/raytracing/raytracing-gpu/build/
+# =============================================================================
+# Object build statements for STATIC_LIBRARY target library
+
+
+#############################################
+# Order-only phony target for library
+
+build cmake_object_order_depends_target_library: phony || CMakeFiles/library.dir
+
+build CMakeFiles/library.dir/src/display/window.cpp.o: CUDA_COMPILER__library_unscanned_Debug /home/darren/Documents/raytracing/raytracing-gpu/src/display/window.cpp || cmake_object_order_depends_target_library
+  DEP_FILE = CMakeFiles/library.dir/src/display/window.cpp.o.d
+  FLAGS = -g -std=c++17
+  OBJECT_DIR = CMakeFiles/library.dir
+  OBJECT_FILE_DIR = CMakeFiles/library.dir/src/display
+
+build CMakeFiles/library.dir/src/materials/dielectric.cpp.o: CUDA_COMPILER__library_unscanned_Debug /home/darren/Documents/raytracing/raytracing-gpu/src/materials/dielectric.cpp || cmake_object_order_depends_target_library
+  DEP_FILE = CMakeFiles/library.dir/src/materials/dielectric.cpp.o.d
+  FLAGS = -g -std=c++17
+  OBJECT_DIR = CMakeFiles/library.dir
+  OBJECT_FILE_DIR = CMakeFiles/library.dir/src/materials
+
+build CMakeFiles/library.dir/src/materials/lambertian.cpp.o: CUDA_COMPILER__library_unscanned_Debug /home/darren/Documents/raytracing/raytracing-gpu/src/materials/lambertian.cpp || cmake_object_order_depends_target_library
+  DEP_FILE = CMakeFiles/library.dir/src/materials/lambertian.cpp.o.d
+  FLAGS = -g -std=c++17
+  OBJECT_DIR = CMakeFiles/library.dir
+  OBJECT_FILE_DIR = CMakeFiles/library.dir/src/materials
+
+build CMakeFiles/library.dir/src/materials/metal.cpp.o: CUDA_COMPILER__library_unscanned_Debug /home/darren/Documents/raytracing/raytracing-gpu/src/materials/metal.cpp || cmake_object_order_depends_target_library
+  DEP_FILE = CMakeFiles/library.dir/src/materials/metal.cpp.o.d
+  FLAGS = -g -std=c++17
+  OBJECT_DIR = CMakeFiles/library.dir
+  OBJECT_FILE_DIR = CMakeFiles/library.dir/src/materials
+
+
+# =============================================================================
+# Link build statements for STATIC_LIBRARY target library
+
+
+#############################################
+# Link the static library liblibrary.a
+
+build liblibrary.a: CUDA_STATIC_LIBRARY_LINKER__library_Debug CMakeFiles/library.dir/src/display/window.cpp.o CMakeFiles/library.dir/src/materials/dielectric.cpp.o CMakeFiles/library.dir/src/materials/lambertian.cpp.o CMakeFiles/library.dir/src/materials/metal.cpp.o
+  LANGUAGE_COMPILE_FLAGS = -g
+  OBJECT_DIR = CMakeFiles/library.dir
+  POST_BUILD = :
+  PRE_LINK = :
+  TARGET_FILE = liblibrary.a
+  TARGET_PDB = library.a.dbg
+
+# =============================================================================
+# Object build statements for EXECUTABLE target raytracer-gpu
+
+
+#############################################
+# Order-only phony target for raytracer-gpu
+
+build cmake_object_order_depends_target_raytracer-gpu: phony || cmake_object_order_depends_target_library
+
+build CMakeFiles/raytracer-gpu.dir/src/main.cu.o: CUDA_COMPILER__raytracer-gpu_unscanned_Debug /home/darren/Documents/raytracing/raytracing-gpu/src/main.cu || cmake_object_order_depends_target_raytracer-gpu
+  DEP_FILE = CMakeFiles/raytracer-gpu.dir/src/main.cu.o.d
+  FLAGS = -g -std=c++17
+  OBJECT_DIR = CMakeFiles/raytracer-gpu.dir
+  OBJECT_FILE_DIR = CMakeFiles/raytracer-gpu.dir/src
+
+
+# =============================================================================
+# Device Link build statements for EXECUTABLE target raytracer-gpu
+
+
+#############################################
+# Link the executable CMakeFiles/raytracer-gpu.dir/cmake_device_link.o
+
+build CMakeFiles/raytracer-gpu.dir/cmake_device_link.o: CUDA_EXECUTABLE_DEVICE_LINKER__raytracer-gpu_Debug CMakeFiles/raytracer-gpu.dir/src/main.cu.o | liblibrary.a || liblibrary.a
+  LANGUAGE_COMPILE_FLAGS = -g
+  LINK_LIBRARIES = liblibrary.a -lcudadevrt -lcudart_static -lrt -lpthread -ldl
+  OBJECT_DIR = CMakeFiles/raytracer-gpu.dir
+  TARGET_FILE = CMakeFiles/raytracer-gpu.dir/cmake_device_link.o
+
+# =============================================================================
+# Link build statements for EXECUTABLE target raytracer-gpu
+
+
+#############################################
+# Link the executable raytracer-gpu
+
+build raytracer-gpu: CUDA_EXECUTABLE_LINKER__raytracer-gpu_Debug CMakeFiles/raytracer-gpu.dir/src/main.cu.o CMakeFiles/raytracer-gpu.dir/cmake_device_link.o | liblibrary.a || liblibrary.a
+  FLAGS = -g
+  LINK_LIBRARIES = liblibrary.a  -lcudadevrt  -lcudart_static  -lrt  -lpthread  -ldl
+  OBJECT_DIR = CMakeFiles/raytracer-gpu.dir
+  POST_BUILD = :
+  PRE_LINK = :
+  TARGET_FILE = raytracer-gpu
+  TARGET_PDB = raytracer-gpu.dbg
+
 
 #############################################
 # Utility command for Experimental
@@ -207,62 +301,6 @@ build ContinuousMemCheck: phony CMakeFiles/ContinuousMemCheck
 # Utility command for ContinuousSubmit
 
 build ContinuousSubmit: phony CMakeFiles/ContinuousSubmit
-
-# =============================================================================
-# Object build statements for EXECUTABLE target raytracer-gpu
-
-
-#############################################
-# Order-only phony target for raytracer-gpu
-
-build cmake_object_order_depends_target_raytracer-gpu: phony || CMakeFiles/raytracer-gpu.dir
-
-build CMakeFiles/raytracer-gpu.dir/src/main.cu.o: CUDA_COMPILER__raytracer-gpu_unscanned_Debug /home/darren/Documents/raytracing/raytracing-gpu/src/main.cu || cmake_object_order_depends_target_raytracer-gpu
-  DEP_FILE = CMakeFiles/raytracer-gpu.dir/src/main.cu.o.d
-  FLAGS = -g -std=c++14
-  OBJECT_DIR = CMakeFiles/raytracer-gpu.dir
-  OBJECT_FILE_DIR = CMakeFiles/raytracer-gpu.dir/src
-
-
-# =============================================================================
-# Link build statements for EXECUTABLE target raytracer-gpu
-
-
-#############################################
-# Link the executable raytracer-gpu
-
-build raytracer-gpu: CUDA_EXECUTABLE_LINKER__raytracer-gpu_Debug CMakeFiles/raytracer-gpu.dir/src/main.cu.o
-  FLAGS = -g
-  LINK_LIBRARIES = -lcudadevrt  -lcudart_static  -lrt  -lpthread  -ldl
-  OBJECT_DIR = CMakeFiles/raytracer-gpu.dir
-  POST_BUILD = :
-  PRE_LINK = :
-  TARGET_FILE = raytracer-gpu
-  TARGET_PDB = raytracer-gpu.dbg
-
-
-#############################################
-# Utility command for package
-
-build CMakeFiles/package.util: CUSTOM_COMMAND all
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/cpack --config ./CPackConfig.cmake
-  DESC = Run CPack packaging tool...
-  pool = console
-  restat = 1
-
-build package: phony CMakeFiles/package.util
-
-
-#############################################
-# Utility command for package_source
-
-build CMakeFiles/package_source.util: CUSTOM_COMMAND
-  COMMAND = cd /home/darren/Documents/raytracing/raytracing-gpu/build && /home/darren/.local/lib/python3.8/site-packages/cmake/data/bin/cpack --config ./CPackSourceConfig.cmake /home/darren/Documents/raytracing/raytracing-gpu/build/CPackSourceConfig.cmake
-  DESC = Run CPack packaging tool for source...
-  pool = console
-  restat = 1
-
-build package_source: phony CMakeFiles/package_source.util
 
 
 #############################################
@@ -526,6 +564,8 @@ build CMakeFiles/ContinuousSubmit | ${cmake_ninja_workdir}CMakeFiles/ContinuousS
 # =============================================================================
 # Target aliases.
 
+build library: phony liblibrary.a
+
 # =============================================================================
 # Folder targets.
 
@@ -534,23 +574,37 @@ build CMakeFiles/ContinuousSubmit | ${cmake_ninja_workdir}CMakeFiles/ContinuousS
 #############################################
 # Folder: /home/darren/Documents/raytracing/raytracing-gpu/build
 
-build all: phony raytracer-gpu
+build all: phony liblibrary.a raytracer-gpu
 
 # =============================================================================
 # Built-in targets
 
 
 #############################################
+# Phony target to force glob verification run.
+
+build /home/darren/Documents/raytracing/raytracing-gpu/build/CMakeFiles/VerifyGlobs.cmake_force: phony
+
+
+#############################################
+# Re-run CMake to check if globbed directories changed.
+
+build /home/darren/Documents/raytracing/raytracing-gpu/build/CMakeFiles/cmake.verify_globs: VERIFY_GLOBS | /home/darren/Documents/raytracing/raytracing-gpu/build/CMakeFiles/VerifyGlobs.cmake_force
+  pool = console
+  restat = 1
+
+
+#############################################
 # Re-run CMake if any of its inputs changed.
 
-build build.ninja: RERUN_CMAKE | /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeCUDAInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeCXXInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeCommonLanguageInclude.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeGenericSystem.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeInitializeConfigs.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeLanguageInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeSystemSpecificInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeSystemSpecificInitialize.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CPack.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CPackComponent.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CTest.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CTestTargets.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CTestUseLaunchers.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/CMakeCommonCompilerMacros.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/Clang-CXX.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/Clang.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/GNU.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/NVIDIA-CUDA.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/DartConfiguration.tcl.in /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-Clang-CXX.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-GNU-CXX.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-GNU.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/UnixPaths.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Templates/CPackConfig.cmake.in /home/darren/Documents/raytracing/raytracing-gpu/CMakeLists.txt CMakeCache.txt CMakeFiles/3.26.1/CMakeCUDACompiler.cmake CMakeFiles/3.26.1/CMakeCXXCompiler.cmake CMakeFiles/3.26.1/CMakeSystem.cmake
+build build.ninja: RERUN_CMAKE /home/darren/Documents/raytracing/raytracing-gpu/build/CMakeFiles/cmake.verify_globs | /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeCUDAInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeCXXInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeCommonLanguageInclude.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeGenericSystem.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeInitializeConfigs.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeLanguageInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeSystemSpecificInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeSystemSpecificInitialize.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CTest.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CTestTargets.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CTestUseLaunchers.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/CMakeCommonCompilerMacros.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/Clang-CXX.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/Clang.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/GNU.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/NVIDIA-CUDA.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/DartConfiguration.tcl.in /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-Clang-CXX.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-GNU-CXX.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-GNU.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/UnixPaths.cmake /home/darren/Documents/raytracing/raytracing-gpu/CMakeLists.txt /home/darren/Documents/raytracing/raytracing-gpu/build/CMakeFiles/VerifyGlobs.cmake CMakeCache.txt CMakeFiles/3.26.1/CMakeCUDACompiler.cmake CMakeFiles/3.26.1/CMakeCXXCompiler.cmake CMakeFiles/3.26.1/CMakeSystem.cmake
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
-build /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeCUDAInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeCXXInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeCommonLanguageInclude.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeGenericSystem.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeInitializeConfigs.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeLanguageInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeSystemSpecificInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeSystemSpecificInitialize.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CPack.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CPackComponent.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CTest.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CTestTargets.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CTestUseLaunchers.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/CMakeCommonCompilerMacros.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/Clang-CXX.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/Clang.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/GNU.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/NVIDIA-CUDA.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/DartConfiguration.tcl.in /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-Clang-CXX.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-GNU-CXX.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-GNU.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/UnixPaths.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Templates/CPackConfig.cmake.in /home/darren/Documents/raytracing/raytracing-gpu/CMakeLists.txt CMakeCache.txt CMakeFiles/3.26.1/CMakeCUDACompiler.cmake CMakeFiles/3.26.1/CMakeCXXCompiler.cmake CMakeFiles/3.26.1/CMakeSystem.cmake: phony
+build /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeCUDAInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeCXXInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeCommonLanguageInclude.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeGenericSystem.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeInitializeConfigs.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeLanguageInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeSystemSpecificInformation.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CMakeSystemSpecificInitialize.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CTest.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CTestTargets.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/CTestUseLaunchers.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/CMakeCommonCompilerMacros.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/Clang-CXX.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/Clang.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/GNU.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Compiler/NVIDIA-CUDA.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/DartConfiguration.tcl.in /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-Clang-CXX.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-GNU-CXX.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux-GNU.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/Linux.cmake /home/darren/.local/lib/python3.8/site-packages/cmake/data/share/cmake-3.26/Modules/Platform/UnixPaths.cmake /home/darren/Documents/raytracing/raytracing-gpu/CMakeLists.txt /home/darren/Documents/raytracing/raytracing-gpu/build/CMakeFiles/VerifyGlobs.cmake CMakeCache.txt CMakeFiles/3.26.1/CMakeCUDACompiler.cmake CMakeFiles/3.26.1/CMakeCXXCompiler.cmake CMakeFiles/3.26.1/CMakeSystem.cmake: phony
 
 
 #############################################

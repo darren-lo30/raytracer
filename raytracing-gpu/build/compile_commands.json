@@ -1,7 +1,31 @@
 [
 {
   "directory": "/home/darren/Documents/raytracing/raytracing-gpu/build",
-  "command": "/usr/local/cuda-12.1/bin/nvcc -forward-unknown-to-host-compiler -g -std=c++14 -x cu -c /home/darren/Documents/raytracing/raytracing-gpu/src/main.cu -o CMakeFiles/raytracer-gpu.dir/src/main.cu.o",
+  "command": "/usr/local/cuda-12.1/bin/nvcc -forward-unknown-to-host-compiler -g -std=c++17 -x cu -rdc=true -c /home/darren/Documents/raytracing/raytracing-gpu/src/display/window.cpp -o CMakeFiles/library.dir/src/display/window.cpp.o",
+  "file": "/home/darren/Documents/raytracing/raytracing-gpu/src/display/window.cpp",
+  "output": "CMakeFiles/library.dir/src/display/window.cpp.o"
+},
+{
+  "directory": "/home/darren/Documents/raytracing/raytracing-gpu/build",
+  "command": "/usr/local/cuda-12.1/bin/nvcc -forward-unknown-to-host-compiler -g -std=c++17 -x cu -rdc=true -c /home/darren/Documents/raytracing/raytracing-gpu/src/materials/dielectric.cpp -o CMakeFiles/library.dir/src/materials/dielectric.cpp.o",
+  "file": "/home/darren/Documents/raytracing/raytracing-gpu/src/materials/dielectric.cpp",
+  "output": "CMakeFiles/library.dir/src/materials/dielectric.cpp.o"
+},
+{
+  "directory": "/home/darren/Documents/raytracing/raytracing-gpu/build",
+  "command": "/usr/local/cuda-12.1/bin/nvcc -forward-unknown-to-host-compiler -g -std=c++17 -x cu -rdc=true -c /home/darren/Documents/raytracing/raytracing-gpu/src/materials/lambertian.cpp -o CMakeFiles/library.dir/src/materials/lambertian.cpp.o",
+  "file": "/home/darren/Documents/raytracing/raytracing-gpu/src/materials/lambertian.cpp",
+  "output": "CMakeFiles/library.dir/src/materials/lambertian.cpp.o"
+},
+{
+  "directory": "/home/darren/Documents/raytracing/raytracing-gpu/build",
+  "command": "/usr/local/cuda-12.1/bin/nvcc -forward-unknown-to-host-compiler -g -std=c++17 -x cu -rdc=true -c /home/darren/Documents/raytracing/raytracing-gpu/src/materials/metal.cpp -o CMakeFiles/library.dir/src/materials/metal.cpp.o",
+  "file": "/home/darren/Documents/raytracing/raytracing-gpu/src/materials/metal.cpp",
+  "output": "CMakeFiles/library.dir/src/materials/metal.cpp.o"
+},
+{
+  "directory": "/home/darren/Documents/raytracing/raytracing-gpu/build",
+  "command": "/usr/local/cuda-12.1/bin/nvcc -forward-unknown-to-host-compiler -g -std=c++17 -x cu -rdc=true -c /home/darren/Documents/raytracing/raytracing-gpu/src/main.cu -o CMakeFiles/raytracer-gpu.dir/src/main.cu.o",
   "file": "/home/darren/Documents/raytracing/raytracing-gpu/src/main.cu",
   "output": "CMakeFiles/raytracer-gpu.dir/src/main.cu.o"
 }

@@ -5,6 +5,7 @@
 #include "ray.h"
 #include "managed.h"
 #include "curand_kernel.h"
+#include "utils.h"
 
 class Camera : public Managed {
   public:

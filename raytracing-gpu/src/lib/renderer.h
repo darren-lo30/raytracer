@@ -4,8 +4,9 @@
 #include "camera.h"
 #include "hittable_list.h"
 #include "vec3.h"
-#include "material.h"
+#include "../materials/material.h"
 #include "error.h"
+#include "utils.h"
 #include <fstream>
 #include "hittable.h"
 

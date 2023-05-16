@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <fstream>
 #include "lib/utils.h"
@@ -8,31 +9,12 @@
 #include "lib/hittable.h"
 #include "lib/hittable_list.h"
 #include "lib/sphere.h"
-#include "lib/metal.h"
-#include "lib/lambertian.h"
-#include "lib/dielectric.h"
+#include "materials/metal.h"
+#include "materials/lambertian.h"
+#include "materials/dielectric.h"
 #include <curand_kernel.h>
 #include <time.h>
 
-
-
-__global__ void init_world(HittableList **world) {
-  if(blockIdx.x == 0 && threadIdx.x == 0) {
-    *world = new HittableList();
-    (*world)->size = 4;
-    (*world)->objects = new Hittable*[4];
-    
-    Material *mat_ground = new Lambertian(color(0.8, 0.8, 0.0));
-    Material *mat_center = new Lambertian(color(0.7, 0.3, 0.3));
-    Material *mat_left = new Metal(color(0.8, 0.8, 0.8), 0.5f);
-    Material *mat_right = new Metal(color(0.8, 0.6, 0.2), 0.0f);
-
-    (*world)->add(new Sphere(point3( 0.0, -100.5, -1.0), 100.0, mat_ground));
-    (*world)->add(new Sphere(point3( 0.0,    0.0, -1.0), 0.5, mat_center));
-    (*world)->add(new Sphere(point3(-1.0,    0.0, -1.0),   0.5, mat_left));
-    (*world)->add(new Sphere(point3( 1.0,    0.0, -1.0),   0.5, mat_right));
-  }
-}
 
 
 __global__
@@ -56,8 +38,6 @@ void random_scene(HittableList** world) {
     for (int b = -11; b < 11; b++) {
       auto choose_mat = random_float(state);
       point3 center(a + 0.9*random_float(state), 0.2, b + 0.9*random_float(state));
-
-      int sphere_idx = 1 + (a + 11) * 22 + (b + 11);
       if ((center - point3(4, 0.2, 0)).length() > 0.9) {
         Material* sphere_mat;
 
@@ -91,6 +71,7 @@ void random_scene(HittableList** world) {
 }
 
 int main() {
+  Metal test(color(3, 3, 3), 1.f);
   const float aspect_ratio = 16.0/9.0;
   Renderer renderer = Renderer(1200, aspect_ratio);
 

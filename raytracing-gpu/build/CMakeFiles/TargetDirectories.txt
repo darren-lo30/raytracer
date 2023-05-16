@@ -1,3 +1,5 @@
+/home/darren/Documents/raytracing/raytracing-gpu/build/CMakeFiles/library.dir
+/home/darren/Documents/raytracing/raytracing-gpu/build/CMakeFiles/raytracer-gpu.dir
 /home/darren/Documents/raytracing/raytracing-gpu/build/CMakeFiles/Experimental.dir
 /home/darren/Documents/raytracing/raytracing-gpu/build/CMakeFiles/Nightly.dir
 /home/darren/Documents/raytracing/raytracing-gpu/build/CMakeFiles/Continuous.dir
@@ -26,9 +28,6 @@
 /home/darren/Documents/raytracing/raytracing-gpu/build/CMakeFiles/ContinuousCoverage.dir
 /home/darren/Documents/raytracing/raytracing-gpu/build/CMakeFiles/ContinuousMemCheck.dir
 /home/darren/Documents/raytracing/raytracing-gpu/build/CMakeFiles/ContinuousSubmit.dir
-/home/darren/Documents/raytracing/raytracing-gpu/build/CMakeFiles/raytracer-gpu.dir
-/home/darren/Documents/raytracing/raytracing-gpu/build/CMakeFiles/package.dir
-/home/darren/Documents/raytracing/raytracing-gpu/build/CMakeFiles/package_source.dir
 /home/darren/Documents/raytracing/raytracing-gpu/build/CMakeFiles/test.dir
 /home/darren/Documents/raytracing/raytracing-gpu/build/CMakeFiles/edit_cache.dir
 /home/darren/Documents/raytracing/raytracing-gpu/build/CMakeFiles/rebuild_cache.dir

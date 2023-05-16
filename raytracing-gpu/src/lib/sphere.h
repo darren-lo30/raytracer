@@ -3,7 +3,7 @@
 
 #include "hittable.h"
 #include "vec3.h"
-#include "material.h"
+#include "../materials/material.h"
 
 class Sphere : public Hittable { 
   public: 
