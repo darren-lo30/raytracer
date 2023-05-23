@@ -58,3 +58,14 @@ __device__ static vec3 random_in_unit_circle(curandState *state) {
 
   return rand;
 }
+
+__host__ static unsigned char *get_char_array_from_color_array(color *colors, int size) {
+  unsigned char *char_colors = new unsigned char[size * 3];
+  for(int i = 0; i<size; ++i) {
+    char_colors[i * 3 + 0] = static_cast<unsigned char>(colors[i].x() * 255);
+    char_colors[i * 3 + 1] = static_cast<unsigned char>(colors[i].y() * 255);;
+    char_colors[i * 3 + 2] = static_cast<unsigned char>(colors[i].z() * 255);;
+  }
+
+  return char_colors;
+}

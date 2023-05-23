@@ -21,7 +21,7 @@ Window::Window(const std::string& title, unsigned int width, unsigned int height
 	}
 
 	glfwMakeContextCurrent(id);
-	glfwSetInputMode(id, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSwapInterval(1);
 
 	// Set callbacks
 	glfwSetWindowUserPointer(id, this);
@@ -35,9 +35,8 @@ Window::Window(const std::string& title, unsigned int width, unsigned int height
 	}
 
 	glViewport(0, 0, width, height);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_STENCIL_TEST);
-
+	// glEnable(GL_DEPTH_TEST);
+	// glEnable(GL_STENCIL_TEST);
 }
 
 Window::~Window() {
@@ -59,6 +58,11 @@ bool Window::isClosed()  const {
 }
 
 /* Getters and setters */
+
+GLFWwindow *Window::get_id() const {
+	return id;
+}
+
 unsigned int Window::getWidth() const {
 	return dimensions.width;
 }
@@ -74,6 +78,7 @@ const Window::Input* Window::getInputs() const {
 const Window::Dimensions* Window::getDimensions() const {
 	return &dimensions;
 }
+
 // Callbacks
 
 

@@ -33,9 +33,13 @@ public:
 	Window(const std::string& title, unsigned int width, unsigned int height);
 	~Window();
 
+
 	void clear() const;
 	void update() const;
 	bool isClosed() const;
+	void close() const;
+
+	GLFWwindow *get_id() const;
 
 	unsigned int getWidth() const ;
 	unsigned int getHeight() const;

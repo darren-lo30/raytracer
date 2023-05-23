@@ -1,14 +1,14 @@
-#ifndef RENDERER_H
-#define RENDERER_H
+#ifndef RayRenderer_H
+#define RayRenderer_H
 
 #include "camera.h"
-#include "hittable_list.h"
-#include "vec3.h"
+#include "../objects/hittable_list.h"
+#include "../lib/vec3.h"
 #include "../materials/material.h"
 #include "error.h"
-#include "utils.h"
+#include "../lib/utils.h"
 #include <fstream>
-#include "hittable.h"
+#include "../objects/hittable.h"
 
 float to_gamma_space(float val) {
   return sqrt(val);
@@ -94,13 +94,16 @@ void rand_state_init(int image_width, int image_height, curandState *rand_states
   curand_init(1984, sample_idx, 0, &rand_states[sample_idx]);
 }
 
-class Renderer {
+class RayRenderer {
   public:
-    Renderer(int image_width, int image_height) : image_width(image_width), image_height(image_height) {}
-    Renderer(int image_width, float aspect_ratio) : image_width(image_width)
+    RayRenderer(int image_width, int image_height) : image_width(image_width), image_height(image_height) {}
+    RayRenderer(int image_width, float aspect_ratio) : image_width(image_width)
     {
       image_height = static_cast<int>(image_width / aspect_ratio);
     }
+
+    int get_image_width() const { return image_width; };
+    int get_image_height() const { return image_height; };
 
     color* render_fb(const Camera *camera, const HittableList *world) const {
       int num_pixels = image_width * image_height;
@@ -147,7 +150,7 @@ class Renderer {
     int image_width;
     int image_height;    
     const int max_depth = 50;
-    const int num_samples = 10;
+    const int num_samples = 30;
 };
 
 #endif

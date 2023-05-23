@@ -2,23 +2,22 @@
 #include <iostream>
 #include <fstream>
 #include "lib/utils.h"
-#include "lib/renderer.h"
+#include "render/ray_renderer.h"
 #include "lib/ray.h"
 #include "lib/vec3.h"
-#include "lib/camera.h"
-#include "lib/hittable.h"
-#include "lib/hittable_list.h"
-#include "lib/sphere.h"
+#include "render/camera.h"
+#include "objects/hittable.h"
+#include "objects/hittable_list.h"
+#include "objects/sphere.h"
 #include "materials/metal.h"
 #include "materials/lambertian.h"
 #include "materials/dielectric.h"
 #include <curand_kernel.h>
+#include "display/window.h"
+#include "render/shader.h"
 #include <time.h>
 
-
-
-__global__
-void random_scene(HittableList** world) {
+__global__ void random_scene(HittableList** world) {
   if(threadIdx.x != 0 || blockIdx.x != 0) return;
 
   const int size = 25 * 25 + 10;
@@ -71,9 +70,9 @@ void random_scene(HittableList** world) {
 }
 
 int main() {
-  Metal test(color(3, 3, 3), 1.f);
+  // Metal test(color(3, 3, 3), 1.f);
   const float aspect_ratio = 16.0/9.0;
-  Renderer renderer = Renderer(1200, aspect_ratio);
+  RayRenderer renderer = RayRenderer(1200, aspect_ratio);
 
   point3 lookfrom(13,2,3);
   point3 lookat(0,0,0);
@@ -106,8 +105,68 @@ int main() {
   stop = clock();
   double timer_seconds = ((double)(stop - start)) / CLOCKS_PER_SEC;
   std::cout << "Render took " << timer_seconds << " seconds.\n";
-  printf("Writing to file\n");
-  renderer.render_out(fb, myfile);
+
+  Window window("render", (unsigned int) renderer.get_image_width(), (unsigned int) renderer.get_image_height());
+  Shader shader("shaders/vertex_shader.vs", "shaders/fragment_shader.fs");
+  shader.use();
+  float vertices[] = {
+    // positions          // colors           // texture coords
+     1.00f,  1.0f, 0.0f,   1.0f, 1.0f,   // top right
+     1.0f, -1.0f, 0.0f,  1.0f, 0.0f,   // bottom right
+    -1.0f, -1.0f, 0.0f,   0.0f, 0.0f,   // bottom left
+    -1.0f,  1.0f, 0.0f,  0.0f, 1.0f    // top left 
+};
+
+  unsigned int indices[] = {  // note that we start from 0!
+      0, 1, 3,   // first triangle
+      1, 2, 3    // second triangle
+  };
+
+
+  unsigned int VAO;
+  glGenVertexArrays(1, &VAO);
+  glBindVertexArray(VAO);
+
+  unsigned int VBO;
+  glGenBuffers(1, &VBO);
+  glBindBuffer(GL_ARRAY_BUFFER, VBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+  
+  unsigned int EBO;
+  glGenBuffers(1, &EBO);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+  glEnableVertexAttribArray(0);  
+  glEnableVertexAttribArray(1);  
+
+  unsigned int texture;
+  glGenTextures(1, &texture);
+  glBindTexture(GL_TEXTURE_2D, texture);
+
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+  unsigned char *data = get_char_array_from_color_array(fb, renderer.get_image_height() * renderer.get_image_width());
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1 );
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, renderer.get_image_width(), renderer.get_image_height(), 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+  glGenerateMipmap(GL_TEXTURE_2D);
+
+  while(!glfwWindowShouldClose(window.get_id())) {
+    glClearColor(1.0f, 0.3f, 0.3f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    shader.use();
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+    glfwSwapBuffers(window.get_id());
+    glfwPollEvents();
+  }
 
   myfile.close();
 }

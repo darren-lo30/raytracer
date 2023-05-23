@@ -1,8 +1,7 @@
-#ifndef HITTABLE_H
-#define HITTABLE_H
+#pragma once 
 
-#include "vec3.h"
-#include "ray.h"
+#include "../lib/vec3.h"
+#include "../lib/ray.h"
 
 class Material;
 
@@ -23,7 +22,4 @@ class Hittable {
   public:
     __host__ __device__ Hittable() {}
     __device__ virtual bool hit(const ray &r, float t_min, float t_max, HitRecord &rec) const = 0;
-
 };
-
-#endif

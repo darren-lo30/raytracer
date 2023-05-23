@@ -1,11 +1,11 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "vec3.h"
-#include "ray.h"
-#include "managed.h"
+#include "../lib/vec3.h"
+#include "../lib/ray.h"
+#include "../lib/managed.h"
 #include "curand_kernel.h"
-#include "utils.h"
+#include "../lib/utils.h"
 
 class Camera : public Managed {
   public:

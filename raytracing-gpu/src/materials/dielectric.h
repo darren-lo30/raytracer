@@ -3,7 +3,7 @@
 
 #include "material.h"
 #include "../lib/ray.h"
-#include "../lib/hittable.h"
+#include "../objects/hittable.h"
 #include "../lib/vec3.h"
 #include "../lib/utils.h"
 
