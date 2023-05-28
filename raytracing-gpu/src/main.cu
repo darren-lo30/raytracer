@@ -15,6 +15,7 @@
 #include <curand_kernel.h>
 #include "display/window.h"
 #include "render/shader.h"
+#include "objects/triangle.h"
 #include <time.h>
 
 __global__ void random_scene(HittableList** world) {
@@ -29,9 +30,8 @@ __global__ void random_scene(HittableList** world) {
   curandState *state = &state_val;
 
 
-
   auto ground_material = new Lambertian(color(0.5, 0.5, 0.5));
-  (*world)->add(new Sphere(point3(0,-1000,0), 1000, ground_material));
+  (*world)->add(new Triangle(point3(0,0,5), point3(5, 0, -5), point3(-5, 0, -5), ground_material));
 
   for (int a = -11; a < 11; a++) {
     for (int b = -11; b < 11; b++) {

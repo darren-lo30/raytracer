@@ -66,7 +66,17 @@
     "codecvt": "cpp",
     "iomanip": "cpp",
     "cinttypes": "cpp",
-    "__nullptr": "cpp"
+    "__nullptr": "cpp",
+    "any": "cpp",
+    "complex": "cpp",
+    "forward_list": "cpp",
+    "list": "cpp",
+    "unordered_set": "cpp",
+    "regex": "cpp",
+    "shared_mutex": "cpp",
+    "variant": "cpp",
+    "cassert": "cpp",
+    "filesystem": "cpp"
   },
 
 }

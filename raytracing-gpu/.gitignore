@@ -1,1 +1,4 @@
 /build
+/extern/assimp-build
+/extern/assimp-subbuild
+/extern/assimp-src
