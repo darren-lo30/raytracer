@@ -1,8 +1,8 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
-#include "../lib/vec3.h"
-#include "../lib/ray.h"
+#include "../math/vec3.h"
+#include "../math/ray.h"
 #include <curand_kernel.h>
 
 class HitRecord;

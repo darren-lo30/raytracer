@@ -1,5 +1,4 @@
-#ifndef MANAGED_H
-#define MANAGED_H
+#pragma once
 
 #include "error.h"
 
@@ -19,6 +18,3 @@ class Managed {
 
     
 };
-
-
-#endif

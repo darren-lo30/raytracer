@@ -1,10 +1,8 @@
-#ifndef LAMBERTIAN_H
-#define LAMBERTIAN_H
+#pragma once
 
 #include "material.h"
-#include "../lib/vec3.h"
+#include "../math/vec3.h"
 #include "../objects/hittable.h"
-#include "../lib/utils.h"
 
 class Lambertian : public Material {
   public: 
@@ -13,4 +11,3 @@ class Lambertian : public Material {
   private:
     color albedo;
 };
-#endif

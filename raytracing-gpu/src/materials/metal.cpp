@@ -1,6 +1,6 @@
 #include "metal.h"
-#include "../lib/utils.h"
 #include "../objects/hittable.h"
+#include "../utils/rand.h"
 
 __device__ Metal::Metal(const color &color, float fuzziness) :  albedo(color), fuzziness(fuzziness) {};
 __device__ bool Metal::scatter(const ray& r, const HitRecord& rec, color& attentuation, ray& scattered , curandState* state) const {

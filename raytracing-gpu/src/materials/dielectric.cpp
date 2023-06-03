@@ -1,4 +1,5 @@
 #include "dielectric.h"
+#include "../utils/rand.h"
 
 __host__ __device__ Dielectric::Dielectric(float index_of_refraction) : index_of_refraction(index_of_refraction) {}
 __device__ bool Dielectric::scatter(const ray& r, const HitRecord& rec, color& attentuation, ray& scattered, curandState *state) const {

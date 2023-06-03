@@ -1,11 +1,9 @@
-#ifndef DIELECTRIC_H
-#define DIELECTRIC_H
+#pragma once
 
 #include "material.h"
-#include "../lib/ray.h"
+#include "../math/ray.h"
 #include "../objects/hittable.h"
-#include "../lib/vec3.h"
-#include "../lib/utils.h"
+#include "../math/vec3.h"
 
 class Dielectric : public Material {
   public:
@@ -20,5 +18,3 @@ class Dielectric : public Material {
       return r0 + (1 - r0) * pow((1 - cosine), 5);
     }
 };
-
-#endif

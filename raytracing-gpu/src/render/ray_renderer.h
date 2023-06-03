@@ -3,12 +3,13 @@
 
 #include "camera.h"
 #include "../objects/hittable_list.h"
-#include "../lib/vec3.h"
+#include "../math/vec3.h"
 #include "../materials/material.h"
 #include "error.h"
-#include "../lib/utils.h"
 #include <fstream>
 #include "../objects/hittable.h"
+#include "../utils/constants.h"
+#include "../utils/rand.h"
 
 float to_gamma_space(float val) {
   return sqrt(val);

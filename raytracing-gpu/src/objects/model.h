@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../lib/vec3.h"
-#include "../lib/vec2.h"
+#include "../math/vec3.h"
+#include "../math/vec2.h"
 #include "triangle.h"
 #include "hittable_list.h"
 

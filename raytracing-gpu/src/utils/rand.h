@@ -1,25 +1,10 @@
 #pragma once
 
-#include <cmath>
-#include <limits>
 #include <memory>
 #include <random>
 #include <curand_kernel.h>
-#include "vec3.h"
+#include "../math/vec3.h"
 
-const static float infinity = std::numeric_limits<float>::infinity();
-const static float pi = 3.1415926535;
-
-// Utility Functions
-__host__ __device__ static inline float degrees_to_radians(float degrees) {
-  return degrees * pi / 180.0;
-}
-
-__host__ __device__ static inline float clamp(float x, float min, float max) {
-  if(x < min) return min;
-  if(x > max) return max;
-  return x;
-}
 
 __device__ static inline float random_float(curandState *state) {
   return curand_uniform(state);
@@ -57,15 +42,4 @@ __device__ static vec3 random_in_unit_circle(curandState *state) {
   } while(rand.length_squared() >= 1);
 
   return rand;
-}
-
-__host__ static unsigned char *get_char_array_from_color_array(color *colors, int size) {
-  unsigned char *char_colors = new unsigned char[size * 3];
-  for(int i = 0; i<size; ++i) {
-    char_colors[i * 3 + 0] = static_cast<unsigned char>(colors[i].x() * 255);
-    char_colors[i * 3 + 1] = static_cast<unsigned char>(colors[i].y() * 255);;
-    char_colors[i * 3 + 2] = static_cast<unsigned char>(colors[i].z() * 255);;
-  }
-
-  return char_colors;
 }

@@ -1,5 +1,4 @@
-#ifndef METAL_H
-#define METAL_H
+#pragma once
 
 #include "material.h"
 
@@ -11,5 +10,3 @@ class Metal : public Material {
     color albedo;
     float fuzziness;
 };
-
-#endif

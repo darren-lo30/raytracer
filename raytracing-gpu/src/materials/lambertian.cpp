@@ -1,4 +1,5 @@
 #include "lambertian.h"
+#include "../utils/rand.h"
 
 __host__ __device__ Lambertian::Lambertian(const color &c) : albedo(c) {};
 

@@ -5,7 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include "../lib/file.h"
+#include "../utils/file.h"
 
 class Shader {
   public:
