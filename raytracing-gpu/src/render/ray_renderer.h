@@ -28,9 +28,7 @@ void draw_color(std::ostream &out, color pixel_color) {
 }
 
 __device__ 
-color ray_color(const ray& in_ray, const HittableList *world, curandState* rand_state) {    
-  const int max_depth = 50;
-
+color ray_color(const ray& in_ray, const HittableList *world, const int max_depth, curandState* rand_state) {    
   ray curr_ray = in_ray;
   color out_col(1, 1, 1);
 
@@ -39,14 +37,13 @@ color ray_color(const ray& in_ray, const HittableList *world, curandState* rand_
     if (world->hit(curr_ray, 0.001, infinity, rec)) {
       color attenuation;
       ray scattered;
-      if(rec.mat->scatter(curr_ray, rec, attenuation , scattered, rand_state)) {
+      if(rec.mat->scatter(curr_ray, rec, attenuation, scattered, rand_state)) {
         out_col = out_col * attenuation;
         curr_ray = scattered;
       }
     } else {
       vec3 unit_direction = unit(curr_ray.direction());
-      auto t = 0.5*(unit_direction.y() + 1.0);
-      return out_col * ((1.0 - t) * color(1.0, 1.0, 1.0) + t * color(0.5, 0.7, 1.0));  
+      return out_col * (0.8 * color(0.5, 0.7, 1.0));  
     }
   }
 
@@ -54,7 +51,7 @@ color ray_color(const ray& in_ray, const HittableList *world, curandState* rand_
 }
 
 __global__
-void render_fb_samples(color *fb_samples, int image_width, int image_height, const Camera *camera, const HittableList* world, curandState *rand_states) {
+void render_fb_samples(color *fb_samples, int image_width, int image_height, const Camera *camera, const HittableList* world, const int max_depth, curandState *rand_states) {
   int x = blockIdx.x;
   int y = blockIdx.y;
 
@@ -66,7 +63,7 @@ void render_fb_samples(color *fb_samples, int image_width, int image_height, con
   curandState* local_state = &rand_states[sample_idx];
   float h = float(x + random_float(local_state)) / image_width;
   float v = float(y + random_float(local_state)) / image_height;
-  fb_samples[sample_idx] = ray_color(camera->get_ray(h, v, &rand_states[sample_idx]), world, local_state);
+  fb_samples[sample_idx] = ray_color(camera->get_ray(h, v, &rand_states[sample_idx]), world, max_depth, local_state);
 }
 
 __global__
@@ -114,10 +111,10 @@ class RayRenderer {
       color *fb;
       color *fb_samples;
       curandState *rand_states;
-
+  
       checkCudaErrors(cudaMallocManaged(&fb, fb_size));
       checkCudaErrors(cudaMallocManaged(&fb_samples, fb_samples_size));
-      checkCudaErrors(cudaMalloc(&rand_states, sizeof(curandState) * num_pixels * num_samples));
+      checkCudaErrors(cudaMallocManaged(&rand_states, sizeof(curandState) * num_pixels * num_samples));
       checkCudaErrors(cudaDeviceSynchronize());
 
       dim3 blocks(image_width, image_height);
@@ -125,7 +122,7 @@ class RayRenderer {
       rand_state_init<<<blocks, num_samples>>>(image_width, image_height, rand_states);
       checkCudaErrors(cudaDeviceSynchronize());
 
-      render_fb_samples<<<blocks, num_samples>>>(fb_samples, image_width, image_height, camera, world, rand_states);
+      render_fb_samples<<<blocks, num_samples>>>(fb_samples, image_width, image_height, camera, world, max_depth, rand_states);
       checkCudaErrors(cudaDeviceSynchronize());
 
       average_samples<<<blocks, 1>>>(fb_samples, num_samples, fb, image_width, image_height);
@@ -133,20 +130,6 @@ class RayRenderer {
 
       return fb;
     }
-    
-    void render_out(const color* fb, std::ostream& out) {
-      out << "P3\n" << image_width << " " << image_height << " 255\n";
-
-      for(int i = image_height-1; i>=0; --i) {
-      std::cerr << "\rScanlines remaining: " << i << ' ' << std::flush;
-      for(int j = 0; j<image_width; ++j) {
-        int pixel_idx = i * image_width + j;
-        color out_col = fb[pixel_idx];
-        draw_color(out, out_col);
-      }
-    }
-  }
-
   private:
     int image_width;
     int image_height;    

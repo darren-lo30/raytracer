@@ -14,12 +14,10 @@ __device__ bool RayMesh::hit(const ray &r, float t_min, float t_max, HitRecord &
 
   for (int i = 0; i<num_triangles; ++i) {
     HitRecord triangle_hit_rec;    
-    if(triangles[i]->hit(r, t_min, t_max, triangle_hit_rec)) {
+    if(triangles[i]->hit(r, t_min, closest_t, triangle_hit_rec)) {
       hit = true;
-      if(triangle_hit_rec.t < closest_t) {
-        closest_t = triangle_hit_rec.t;
-        rec = triangle_hit_rec;
-      }
+      closest_t = triangle_hit_rec.t;
+      rec = triangle_hit_rec;
     }
   }  
 
@@ -31,12 +29,10 @@ __device__ bool RayModel::hit(const ray &r, float t_min, float t_max, HitRecord 
   float closest_t = t_max;
   for (int i = 0; i<num_meshes; ++i) {
     HitRecord mesh_hit_rec;
-    if(meshes[i]->hit(r, t_min, t_max, mesh_hit_rec)) {
+    if(meshes[i]->hit(r, t_min, closest_t, mesh_hit_rec)) {
       hit = true;
-      if(mesh_hit_rec.t < closest_t) {
-        closest_t = mesh_hit_rec.t;
-        rec = mesh_hit_rec;
-      }
+      closest_t = mesh_hit_rec.t;
+      rec = mesh_hit_rec;
     }
   }  
 

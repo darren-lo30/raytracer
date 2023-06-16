@@ -30,6 +30,7 @@ __device__ bool Triangle::hit(const ray &r, float t_min, float t_max, HitRecord 
   if(t > t_max || t < t_min) return false;
 
   rec.t = t;
+  rec.p = r.at(t);
   rec.set_face_normal(r, e1_cross_e2);
   rec.mat = mat;
   return true;

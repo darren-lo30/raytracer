@@ -29,62 +29,64 @@ __global__ void random_scene(HittableList** world, RayModel *ray_model) {
   Hittable** objects = new Hittable*[size];
   *world = new HittableList(size, objects);
 
-  // curandState state_val;
-  // curand_init(1984, 0, 0, &state_val);
-  // curandState *state = &state_val;
+  curandState state_val;
+  curand_init(1984, 0, 0, &state_val);
+  curandState *state = &state_val;
 
 
   auto ground_material = new Lambertian(color(0.5, 0.5, 0.5));
-  (*world)->add(new Triangle(point3(0,0,5), point3(5, 0, -5), point3(-5, 0, -5), ground_material));
 
-  // for (int a = -11; a < 11; a++) {
-  //   for (int b = -11; b < 11; b++) {
-  //     auto choose_mat = random_float(state);
-  //     point3 center(a + 0.9*random_float(state), 0.2, b + 0.9*random_float(state));
-  //     if ((center - point3(4, 0.2, 0)).length() > 0.9) {
-  //       Material* sphere_mat;
+  for (int a = -11; a < 11; a++) {
+    for (int b = -11; b < 11; b++) {
+      auto choose_mat = random_float(state);
+      point3 center(a + 0.9*random_float(state), 0.2, b + 0.9*random_float(state));
+      if ((center - point3(4, 0.2, 0)).length() > 0.9) {
+        Material* sphere_mat;
 
-  //       if (choose_mat < 0.8) {
-  //         // diffuse
-  //         auto albedo = random_vec3(state) * random_vec3(state);
-  //         sphere_mat = new Lambertian(albedo);
-  //       } else if (choose_mat < 0.95) {
-  //         // metal
-  //         auto albedo = random_vec3(state, 0.5, 1);
-  //         auto fuzz = random_float(state, 0, 0.5);
-  //         sphere_mat = new Metal(albedo, fuzz);
-  //       } else {
-  //         // glass
-  //         sphere_mat = new Dielectric(1.5);
-  //       }
+        if (choose_mat < 0.8) {
+          // diffuse
+          auto albedo = random_vec3(state) * random_vec3(state);
+          sphere_mat = new Lambertian(albedo);
+        } else if (choose_mat < 0.95) {
+          // metal
+          auto albedo = random_vec3(state, 0.5, 1);
+          auto fuzz = random_float(state, 0, 0.5);
+          sphere_mat = new Metal(albedo, fuzz);
+        } else {
+          // glass
+          sphere_mat = new Dielectric(1.5);
+        }
 
-  //       (*world)->add(new Sphere(center, 0.2, sphere_mat));
-  //     }
-  //   }
-  // }
+        (*world)->add(new Sphere(center, 0.2, sphere_mat));
+      }
+    }
+  }
 
-  // auto material1 = new Dielectric(1.5);
-  // (*world)->add(new Sphere(point3(0, 1, 0), 1.0, material1));
+  auto material1 = new Dielectric(1.5);
+  (*world)->add(new Sphere(point3(0, 1, 0), 1.0, material1));
 
-  // auto material2 = new Lambertian(color(0.4, 0.2, 0.1));
-  // (*world)->add(new Sphere(point3(-4, 1, 0), 1.0, material2));
+  auto material2 = new Lambertian(color(0.4, 0.2, 0.1));
+  (*world)->add(new Sphere(point3(-4, 1, 0), 1.0, material2));
 
-  // auto material3 = new Metal(color(0.7, 0.6, 0.5), 0.0);
-  // (*world)->add(new Sphere(point3(4, 1, 0), 1.0, material3));
+  auto material3 = new Metal(color(0.7, 0.6, 0.5), 0.0);
+  (*world)->add(new Sphere(point3(4, 1, 0), 1.0, material3));
 
+  (*world)->add(ray_model); 
   for(int i = 0; i<ray_model->meshes[0]->num_triangles; ++i) {
     ray_model->meshes[0]->triangles[i]->setMat(ground_material);
   }
+  // (*world)->add(new Sphere(point3(0, 0, 3), 1, material3));
+  // (*world)->add(new Triangle(point3(2,3,-1), point3(-5, 0, -1), point3(5, 0, -1), ground_material));
+  // (*world)->add(new Sphere(point3(0, 0, -9), 3, ground_material));
 
-  (*world)->add(ray_model);
 }
 
 int main() {
   // Metal test(color(3, 3, 3), 1.f);
   const float aspect_ratio = 16.0/9.0;
-  RayRenderer renderer = RayRenderer(1200, aspect_ratio);
+  RayRenderer renderer = RayRenderer(1000, aspect_ratio);
 
-  point3 lookfrom(13,2,3);
+  point3 lookfrom(13,10,3);
   point3 lookat(0,0,0);
   vec3 vup(0,1,0);
   auto dist_to_focus = 10.0;
