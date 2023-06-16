@@ -20,56 +20,63 @@
 #include <time.h>
 #include "render/window_renderer.h"
 #include "utils/rand.h"
+#include "objects/ray_model.h"
 
-__global__ void random_scene(HittableList** world) {
+__global__ void random_scene(HittableList** world, RayModel *ray_model) {
   if(threadIdx.x != 0 || blockIdx.x != 0) return;
 
-  const int size = 25 * 25 + 10;
+  const int size = 25 * 25 + 20;
   Hittable** objects = new Hittable*[size];
   *world = new HittableList(size, objects);
 
-  curandState state_val;
-  curand_init(1984, 0, 0, &state_val);
-  curandState *state = &state_val;
+  // curandState state_val;
+  // curand_init(1984, 0, 0, &state_val);
+  // curandState *state = &state_val;
 
 
   auto ground_material = new Lambertian(color(0.5, 0.5, 0.5));
   (*world)->add(new Triangle(point3(0,0,5), point3(5, 0, -5), point3(-5, 0, -5), ground_material));
 
-  for (int a = -11; a < 11; a++) {
-    for (int b = -11; b < 11; b++) {
-      auto choose_mat = random_float(state);
-      point3 center(a + 0.9*random_float(state), 0.2, b + 0.9*random_float(state));
-      if ((center - point3(4, 0.2, 0)).length() > 0.9) {
-        Material* sphere_mat;
+  // for (int a = -11; a < 11; a++) {
+  //   for (int b = -11; b < 11; b++) {
+  //     auto choose_mat = random_float(state);
+  //     point3 center(a + 0.9*random_float(state), 0.2, b + 0.9*random_float(state));
+  //     if ((center - point3(4, 0.2, 0)).length() > 0.9) {
+  //       Material* sphere_mat;
 
-        if (choose_mat < 0.8) {
-          // diffuse
-          auto albedo = random_vec3(state) * random_vec3(state);
-          sphere_mat = new Lambertian(albedo);
-        } else if (choose_mat < 0.95) {
-          // metal
-          auto albedo = random_vec3(state, 0.5, 1);
-          auto fuzz = random_float(state, 0, 0.5);
-          sphere_mat = new Metal(albedo, fuzz);
-        } else {
-          // glass
-          sphere_mat = new Dielectric(1.5);
-        }
+  //       if (choose_mat < 0.8) {
+  //         // diffuse
+  //         auto albedo = random_vec3(state) * random_vec3(state);
+  //         sphere_mat = new Lambertian(albedo);
+  //       } else if (choose_mat < 0.95) {
+  //         // metal
+  //         auto albedo = random_vec3(state, 0.5, 1);
+  //         auto fuzz = random_float(state, 0, 0.5);
+  //         sphere_mat = new Metal(albedo, fuzz);
+  //       } else {
+  //         // glass
+  //         sphere_mat = new Dielectric(1.5);
+  //       }
 
-        (*world)->add(new Sphere(center, 0.2, sphere_mat));
-      }
-    }
+  //       (*world)->add(new Sphere(center, 0.2, sphere_mat));
+  //     }
+  //   }
+  // }
+
+  // auto material1 = new Dielectric(1.5);
+  // (*world)->add(new Sphere(point3(0, 1, 0), 1.0, material1));
+
+  // auto material2 = new Lambertian(color(0.4, 0.2, 0.1));
+  // (*world)->add(new Sphere(point3(-4, 1, 0), 1.0, material2));
+
+  // auto material3 = new Metal(color(0.7, 0.6, 0.5), 0.0);
+  // (*world)->add(new Sphere(point3(4, 1, 0), 1.0, material3));
+
+  for(int i = 0; i<ray_model->meshes[0]->num_triangles; ++i) {
+    ray_model->meshes[0]->triangles[i]->setMat(ground_material);
   }
 
-  auto material1 = new Dielectric(1.5);
-  (*world)->add(new Sphere(point3(0, 1, 0), 1.0, material1));
-
-  auto material2 = new Lambertian(color(0.4, 0.2, 0.1));
-  (*world)->add(new Sphere(point3(-4, 1, 0), 1.0, material2));
-
-  auto material3 = new Metal(color(0.7, 0.6, 0.5), 0.0);
-  (*world)->add(new Sphere(point3(4, 1, 0), 1.0, material3));
+  (*world)->add(ray_model);
 }
 
 int main() {
@@ -85,13 +92,17 @@ int main() {
 
   // Allocate camera
   Camera* camera = new Camera(lookfrom, lookat, vup, 20, aspect_ratio, aperture, dist_to_focus);
+
+  Model model = ModelLoader::load_model("models/cube/cube.obj");
+  auto ray_cube = from_model(model);
+  checkCudaErrors(cudaDeviceSynchronize());
     
   // Allocate world
   // Need to allocate a pointer so that we can create object with "new" in GPU so that virtual functions can run on device
   HittableList **world; 
   checkCudaErrors(cudaMallocManaged(&world, sizeof(HittableList*))); 
   checkCudaErrors(cudaDeviceSynchronize());
-  random_scene<<<1, 1>>>(world);
+  random_scene<<<1, 1>>>(world, ray_cube);
   checkCudaErrors(cudaDeviceSynchronize());
 
   printf("Done setting up scene\n");
@@ -106,13 +117,7 @@ int main() {
   std::cout << "Render took " << timer_seconds << " seconds.\n";
 
   Window window("render", (unsigned int) renderer.get_image_width(), (unsigned int) renderer.get_image_height());
-  Model model = ModelLoader::load_model("models/cube/cube.obj");
-  std::cout << model.meshes[0].triangles.size() << std::endl;
-  for(auto mesh: model.meshes) {
-    for(auto triangle: mesh.triangles) {
-      std::cout << triangle << std::endl;
-    }
-  }
+
 
   WindowRenderer scene_renderer = WindowRenderer();
   unsigned int scene_texture = WindowRenderer::gen_scene_texture(fb, renderer.get_image_width(), renderer.get_image_height());

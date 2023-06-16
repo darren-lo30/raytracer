@@ -34,3 +34,7 @@ __device__ bool Triangle::hit(const ray &r, float t_min, float t_max, HitRecord 
   rec.mat = mat;
   return true;
 }
+
+__device__ void Triangle::setMat(Material *mat) {
+  this->mat = mat;
+}
