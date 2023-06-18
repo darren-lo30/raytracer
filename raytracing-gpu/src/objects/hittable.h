@@ -2,6 +2,7 @@
 
 #include "../math/vec3.h"
 #include "../math/ray.h"
+#include "../math/vec2.h"
 
 class Material;
 
@@ -9,6 +10,7 @@ struct HitRecord {
   point3 p;
   vec3 normal;
   Material *mat; 
+  vec2 uv;
   float t;
   bool front_face;
 

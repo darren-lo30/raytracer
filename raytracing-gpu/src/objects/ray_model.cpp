@@ -77,7 +77,6 @@ RayMesh *from_mesh(const Mesh &mesh) {
 // Annoying thing, for virtual functions to work, we need a double pointer.
 __global__ void init_ray_model(RayModel **ray_model, int num_meshes, RayMesh **ray_meshes) {
   *ray_model = new RayModel(num_meshes, ray_meshes);
-  printf("%d\n", *ray_model);
 }
 
 

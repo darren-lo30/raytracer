@@ -19,6 +19,7 @@
 #include "objects/model_loader.h"
 #include <time.h>
 #include "render/window_renderer.h"
+#include "materials/diffuse_light.h"
 #include "utils/rand.h"
 #include "objects/ray_model.h"
 
@@ -33,6 +34,7 @@ __global__ void random_scene(HittableList** world, RayModel *ray_model) {
   curand_init(1984, 0, 0, &state_val);
   curandState *state = &state_val;
 
+  auto light_mat = new DiffuseLight(color(1, 1, 1));
 
   auto ground_material = new Lambertian(color(0.5, 0.5, 0.5));
 
@@ -63,7 +65,7 @@ __global__ void random_scene(HittableList** world, RayModel *ray_model) {
   }
 
   auto material1 = new Dielectric(1.5);
-  (*world)->add(new Sphere(point3(0, 1, 0), 1.0, material1));
+  (*world)->add(new Sphere(point3(0, 1, 0), 1.0, light_mat));
 
   auto material2 = new Lambertian(color(0.4, 0.2, 0.1));
   (*world)->add(new Sphere(point3(-4, 1, 0), 1.0, material2));
@@ -85,6 +87,7 @@ int main() {
   // Metal test(color(3, 3, 3), 1.f);
   const float aspect_ratio = 16.0/9.0;
   RayRenderer renderer = RayRenderer(1000, aspect_ratio);
+  std::cout << renderer.get_image_height();
 
   point3 lookfrom(13,10,3);
   point3 lookat(0,0,0);
