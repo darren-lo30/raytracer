@@ -10,72 +10,24 @@
 #include "../objects/hittable.h"
 #include "../utils/constants.h"
 #include "../utils/rand.h"
+struct RenderHitRecord {
+  color hit_color;
+  ray out_ray;
+  bool is_first_layer;
+};
 
+struct RenderHitLayer {
+  color hit_color;
+};
+
+__device__
 float to_gamma_space(float val) {
-  return sqrt(val);
+  return sqrt(clamp(val, 0.0, 0.999));
 }
 
-void draw_color(std::ostream &out, color pixel_color) {
-  float r = clamp(to_gamma_space(pixel_color.x()), 0, 0.999); 
-  float g = clamp(to_gamma_space(pixel_color.y()), 0, 0.999); 
-  float b = clamp(to_gamma_space(pixel_color.z()), 0, 0.999); 
-
-  int rVal = static_cast<int>(r * 256);
-  int gVal = static_cast<int>(g * 256);
-  int bVal = static_cast<int>(b * 256);
-
-  out << rVal << ' ' << gVal << ' ' << bVal << '\n';
-}
-
-// __device__ 
-// color ray_color(const ray& in_ray, const HittableList *world, const int max_depth, curandState* rand_state) {    
-//   const color env_color = ((0.7 * color(1, 1, 1)) + (0.3 * color(0.5, 0.7, 1.0)));
-//   // const color env_color = color(0, 0, 0);
-
-//   ray curr_ray = in_ray;
-//   color out_col(1, 1, 1);
-
-//   for(int i = 0; i<max_depth; ++i) {
-//     HitRecord rec;    
-//     if (world->hit(curr_ray, 0.001, infinity, rec)) {
-//       color attenuation;
-//       ray scattered;
-//       // color emitted = rec.mat->emit(rec);
-//       if(rec.mat->scatter(curr_ray, rec, attenuation, scattered, rand_state)) {
-//         out_col = 0.5 * attenuation + 0.5 * out_col;
-//         // out_col = out_col * attenuation;
-//         curr_ray = scattered;
-//       }
-//     } else {
-//       vec3 unit_direction = unit(curr_ray.direction());
-//       return out_col * env_color;  
-//     }
-//   }
-
-//   return color(0, 0, 0);
-// }
-
-__device__ 
-color ray_color(const ray& in_ray, const HittableList *world, const int max_depth, curandState* rand_state) {    
-  const color env_color = (0.7 * color(1, 1, 1)) + (0.3 * color(0.5, 0.7, 1.0));
-  HitRecord rec;    
-  if (max_depth <= 0 || !world->hit(in_ray, 0.001, infinity, rec)) {
-    return env_color;
-  } else {
-    color attenuation;
-    ray scattered;
-    // color emitted = rec.mat->emit(rec);
-    if(rec.mat->scatter(in_ray, rec, attenuation, scattered, rand_state)) {
-      // out_col = 0.5 * attenuation + 0.5 * out_col;
-      return 0.5 * attenuation + 0.5 * ray_color(scattered, world, max_depth - 1, rand_state);
-    } else {
-      return color(0, 0, 0);
-    }
-  }
-}
 
 __global__
-void render_fb_sample(color *fb_sample, int image_width, int image_height, const Camera *camera, const HittableList* world, const int max_depth, curandState *rand_states) {
+void in_rays_init(ray *in_rays, int image_width, int image_height, const Camera *camera, curandState *rand_states) {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
 
@@ -85,11 +37,87 @@ void render_fb_sample(color *fb_sample, int image_width, int image_height, const
   curandState* local_state = &rand_states[pixel_idx];
   float h = float(x + random_float(local_state)) / image_width;
   float v = float(y + random_float(local_state)) / image_height;
-  fb_sample[pixel_idx] = ray_color(camera->get_ray(h, v, local_state), world, max_depth, local_state);
+  in_rays[pixel_idx] = camera->get_ray(h, v, local_state);
+}
+
+__global__ void first_layer_num_init(char *first_layer_num, int image_width, int image_height) {
+  int x = blockIdx.x * blockDim.x + threadIdx.x;
+  int y = blockIdx.y * blockDim.y + threadIdx.y;
+
+  if(x >= image_width || y >= image_height) return;
+  int pixel_idx = y * image_width + x;
+
+  first_layer_num[pixel_idx] = -1;
+}
+
+__device__ 
+RenderHitRecord ray_color_step(const ray& in_ray, const HittableList *world, curandState* rand_state) {    
+  // Implies that the in_ray is null
+  if(in_ray.is_null_ray()) return { color(0, 0, 0), ray::null_ray()};
+  
+  // const color env_color = color(0.3, 0.3, 0.3);
+  HitRecord rec;    
+  if (!world->hit(in_ray, 0.001, infinity, rec)) {
+    vec3 unit_direction = unit(in_ray.direction());
+    auto t = 0.5*(unit_direction.y() + 1.0);
+    color env_color = (1.0-t)*color(1.0, 1.0, 1.0) + t*color(0.5, 0.7, 1.0);
+
+    return { env_color, ray::null_ray(), true };
+  } else {
+    color attenuation;
+    ray scattered;
+    if(rec.mat->scatter(in_ray, rec, attenuation, scattered, rand_state)) {
+      return { attenuation, scattered, false };
+    } else {
+      return { color(0, 0, 0), ray::null_ray(), false };
+    }
+  }
 }
 
 __global__
-void accumulate_sample(color *fb_sample, int num_samples, color *fb, int image_width, int image_height) {
+void ray_trace_step(ray *in_rays, RenderHitLayer *render_layer, char *first_layer_num, int layer_num, int image_width, int image_height, const Camera *camera, const HittableList* world,  curandState *rand_states) {
+  int x = blockIdx.x * blockDim.x + threadIdx.x;
+  int y = blockIdx.y * blockDim.y + threadIdx.y;
+
+  if(x >= image_width || y >= image_height) return;
+  int pixel_idx = y * image_width + x;
+  
+  RenderHitRecord hit_record = ray_color_step(in_rays[pixel_idx], world, &rand_states[pixel_idx]);
+  render_layer[pixel_idx] = { hit_record.hit_color };
+  in_rays[pixel_idx] = hit_record.out_ray;
+  if(hit_record.is_first_layer) {
+    first_layer_num[pixel_idx] = layer_num; 
+  }
+}
+
+__global__
+void rand_state_init(int image_width, int image_height, curandState *rand_states) {
+  int x = blockIdx.x * blockDim.x + threadIdx.x;
+  int y = blockIdx.y * blockDim.y + threadIdx.y;
+
+  if(x >= image_width || y >= image_height) return;
+  int pixel_idx = y * image_width + x;
+
+  curand_init(1984, pixel_idx, 0, &rand_states[pixel_idx]);
+}
+
+__global__ void combine_layers(color *prev_layers, RenderHitLayer *render_layer, char *first_layer_num, int layer_num,  int image_width, int image_height) {
+  int x = blockIdx.x * blockDim.x + threadIdx.x;
+  int y = blockIdx.y * blockDim.y + threadIdx.y;
+
+  if(x >= image_width || y >= image_height) return;
+  int pixel_idx = y * image_width + x;
+  if(first_layer_num[pixel_idx] != -1) {
+    if(first_layer_num[pixel_idx] == layer_num) {
+      prev_layers[pixel_idx] = render_layer[pixel_idx].hit_color;
+    } else if(first_layer_num[pixel_idx] > layer_num) {
+      prev_layers[pixel_idx] = prev_layers[pixel_idx] * render_layer[pixel_idx].hit_color;
+    }
+  }
+}
+
+__global__
+void accumulate_sample(color *fb, int num_samples, color *fb_sample, int image_width, int image_height) {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
 
@@ -99,14 +127,14 @@ void accumulate_sample(color *fb_sample, int num_samples, color *fb, int image_w
 }
 
 __global__
-void rand_state_init(int image_width, int image_height, curandState *rand_states, int sample_num) {
+void fb_to_gamma_space(color *fb, int image_width, int image_height) {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
 
   if(x >= image_width || y >= image_height) return;
   int pixel_idx = y * image_width + x;
-
-  curand_init(1984, pixel_idx * sample_num, 0, &rand_states[pixel_idx]);
+  color &c = fb[pixel_idx];
+  fb[pixel_idx] = color(to_gamma_space(c.x()), to_gamma_space(c.y()), to_gamma_space(c.z()));
 }
 
 class RayRenderer {
@@ -114,50 +142,71 @@ class RayRenderer {
     RayRenderer(int image_width, int image_height) : image_width(image_width), image_height(image_height) {  
       int num_pixels = image_width * image_height;
       auto fb_size = num_pixels * sizeof(color);
-      auto fb_sample_size = fb_size;
 
       checkCudaErrors(cudaMallocManaged(&fb, fb_size));
-      checkCudaErrors(cudaMallocManaged(&fb_sample, fb_sample_size));
+      checkCudaErrors(cudaMallocManaged(&fb_sample, fb_size));
+      checkCudaErrors(cudaMallocManaged(&first_layer_num, num_pixels * sizeof(char)));
+      checkCudaErrors(cudaMallocManaged(&in_rays, num_pixels * sizeof(ray)));
+      checkCudaErrors(cudaMallocManaged(&render_layer, num_pixels * sizeof(RenderHitLayer) * max_depth));
       checkCudaErrors(cudaMallocManaged(&rand_states, sizeof(curandState) * num_pixels));
       checkCudaErrors(cudaDeviceSynchronize());
     }
 
-    RayRenderer(int image_width, float aspect_ratio) : image_width(image_width)
-    {
-      RayRenderer(image_width, static_cast<int>(image_width / aspect_ratio));
-    }
+    RayRenderer(int image_width, float aspect_ratio) : RayRenderer(image_width, static_cast<int>(image_width / aspect_ratio)) {}
 
     int get_image_width() const { return image_width; };
     int get_image_height() const { return image_height; };
 
     color* render_fb(const Camera *camera, const HittableList *world) const {
+      int num_pixels = image_width * image_height;
+
       // 8 x 8 grid of threads in a block
       int thread_dim = 8;
       dim3 threads(thread_dim, thread_dim);
       dim3 blocks((image_width + thread_dim - 1)/thread_dim, (image_height + thread_dim - 1)/thread_dim);
 
+      rand_state_init<<<blocks, threads>>>(image_width, image_height, rand_states);
+      checkCudaErrors(cudaDeviceSynchronize()); 
+
+
       for(int sample_num = 0; sample_num<num_samples; ++sample_num) {
-        rand_state_init<<<blocks, threads>>>(image_width, image_height, rand_states, sample_num);
+        first_layer_num_init<<<blocks, threads>>>(first_layer_num, image_width, image_height);
         checkCudaErrors(cudaDeviceSynchronize()); 
 
-        render_fb_sample<<<blocks, threads>>>(fb_sample, image_width, image_height, camera, world, max_depth, rand_states);
-        checkCudaErrors(cudaDeviceSynchronize());
-        
-        accumulate_sample<<<blocks, threads>>>(fb_sample, num_samples, fb, image_width, image_height);
+        in_rays_init<<<blocks, threads>>>(in_rays, image_width, image_height, camera, rand_states);
+        checkCudaErrors(cudaDeviceSynchronize()); 
+
+        for(int layer_num = 0; layer_num<max_depth; ++layer_num) {
+          ray_trace_step<<<blocks, threads>>>(in_rays, &render_layer[layer_num * num_pixels], first_layer_num, layer_num, image_width, image_height, camera, world, rand_states);
+          checkCudaErrors(cudaDeviceSynchronize());
+        }
+
+        for(int layer_num = max_depth - 1; layer_num >= 0; --layer_num) {
+          combine_layers<<<blocks, threads>>>(fb_sample, &render_layer[layer_num * num_pixels], first_layer_num, layer_num, image_width, image_height);
+          checkCudaErrors(cudaDeviceSynchronize());
+        }
+
+        accumulate_sample<<<blocks, threads>>>(fb, num_samples, fb_sample, image_width, image_height);
         checkCudaErrors(cudaDeviceSynchronize());
       }
+
+      fb_to_gamma_space<<<blocks, threads>>>(fb, image_width, image_height);
+      checkCudaErrors(cudaDeviceSynchronize()); 
 
       return fb;
     }
   private:
     color *fb;
     color *fb_sample;
+    ray *in_rays;
+    char *first_layer_num;
+    RenderHitLayer *render_layer;
     curandState *rand_states;
 
     int image_width;
     int image_height;    
-    const int max_depth = 4;
-    const int num_samples = 50;
+    const int max_depth = 50;
+    const int num_samples = 10;
 };
 
 #endif

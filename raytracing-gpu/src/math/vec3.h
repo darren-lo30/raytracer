@@ -51,7 +51,7 @@ class vec3 {
       return sqrt(length_squared());
     }
 
-    __host__ __device__ bool near_zero() {
+    __host__ __device__ bool near_zero() const {
       float epsilon = 1e-8;
       return (e[0] < epsilon) && (e[1] < epsilon) && (e[2] < epsilon);
     }
