@@ -47,7 +47,7 @@ RenderHitRecord ray_color_step(const ray& in_ray, const HittableList *world, cur
   // Implies that the in_ray is null
   if(in_ray.is_null_ray()) return { color(0, 0, 0), color(0, 0, 0), ray::null_ray(), false};
   
-  const color env_color = color(0.3, 0.3, 0.3);
+  const color env_color = color(0, 0, 0);
   HitRecord rec;    
   if (!world->hit(in_ray, 0.001, infinity, rec)) {
     return { env_color, color(0, 0, 0), ray::null_ray(), true };
@@ -199,6 +199,6 @@ class RayRenderer {
 
     int image_width;
     int image_height;    
-    const int max_depth = 30;
-    const int num_samples = 50;
+    const int max_depth = 10;
+    const int num_samples = 10;
 };

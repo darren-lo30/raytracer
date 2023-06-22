@@ -75,7 +75,7 @@ __global__ void random_scene(HittableList** world, RayModel *ray_model) {
 
   (*world)->add(ray_model); 
   for(int i = 0; i<ray_model->meshes[0]->num_triangles; ++i) {
-    ray_model->meshes[0]->triangles[i]->setMat(ground_material);
+    ray_model->meshes[0]->triangles[i]->setMat(light_mat);
   }
   // (*world)->add(new Sphere(point3(0, 0, 3), 1, material3));
   // (*world)->add(new Triangle(point3(2,3,-1), point3(-5, 0, -1), point3(5, 0, -1), ground_material));
