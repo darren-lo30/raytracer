@@ -6,10 +6,10 @@
 class WindowRenderer {
   public:
     WindowRenderer();
-    void render_scene_to_window(unsigned int scene_texture);
-    static unsigned int gen_scene_texture(color *scene, int scene_width, int scene_height);
+    void renderSceneToWindow(unsigned int sceneTexture);
+    static unsigned int genSceneTexture(color *scene, int sceneWidth, int sceneHeight);
   private: 
     unsigned int VAO;
-    Shader window_shader;
-    static unsigned char *get_char_array_from_color_array(color *colors, int size);
+    Shader windowShader;
+    static unsigned char *getCharArrayFromColorArray(color *colors, int size);
 };

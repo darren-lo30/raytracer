@@ -1,10 +1,10 @@
 #include "shader.h"
 
-unsigned int Shader::compile_shader(const char *shader_code, GLenum shader_type) {
+unsigned int Shader::compileShader(const char *shaderCode, GLenum shaderType) {
   int success;
   char infoLog[512];
-  unsigned int shader = glCreateShader(shader_type);
-  glShaderSource(shader, 1, &shader_code, NULL);
+  unsigned int shader = glCreateShader(shaderType);
+  glShaderSource(shader, 1, &shaderCode, NULL);
   glCompileShader(shader);
 
   glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
@@ -18,23 +18,23 @@ unsigned int Shader::compile_shader(const char *shader_code, GLenum shader_type)
 }
 
 Shader::Shader() {}
-Shader::Shader(std::string vertex_path, std::string fragment_path) {
-  std::string vertex_shader_string, fragment_shader_string;
+Shader::Shader(std::string vertexPath, std::string fragmentPath) {
+  std::string vertexShaderString, fragmentShaderString;
   try {
-    vertex_shader_string = read_file_to_string(vertex_path);
-    fragment_shader_string = read_file_to_string(fragment_path);
+    vertexShaderString = readFileToString(vertexPath);
+    fragmentShaderString = readFileToString(fragmentPath);
   } catch (std::ifstream::failure e) {
     std::cout << "Shader file could not be read with path." << std::endl;
   }
 
-  unsigned int vertex_shader = compile_shader(vertex_shader_string.c_str(), GL_VERTEX_SHADER);
-  unsigned int fragment_shader = compile_shader(fragment_shader_string.c_str(), GL_FRAGMENT_SHADER);
+  unsigned int vertexShader = compileShader(vertexShaderString.c_str(), GL_VERTEX_SHADER);
+  unsigned int fragmentShader = compileShader(fragmentShaderString.c_str(), GL_FRAGMENT_SHADER);
   
   int success;
   char infoLog[512];
   id = glCreateProgram();
-  glAttachShader(id, vertex_shader);
-  glAttachShader(id, fragment_shader);
+  glAttachShader(id, vertexShader);
+  glAttachShader(id, fragmentShader);
   glLinkProgram(id);
   glGetProgramiv(id, GL_LINK_STATUS, &success);
   if(!success) {
@@ -42,8 +42,8 @@ Shader::Shader(std::string vertex_path, std::string fragment_path) {
     std::cout << "Unable to link shader program" << infoLog << std::endl;
   }
   
-  glDeleteShader(vertex_shader);
-  glDeleteShader(fragment_shader);
+  glDeleteShader(vertexShader);
+  glDeleteShader(fragmentShader);
 }
 
 void Shader::use() {

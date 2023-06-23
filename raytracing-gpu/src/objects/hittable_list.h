@@ -1,5 +1,4 @@
-#ifndef HITTABLE_LIST_H
-#define HITTABLE_LIST_H
+#pragma once
 
 #include "hittable.h"
 
@@ -27,26 +26,23 @@ class HittableList : public Hittable {
       return false;
     }
 
-    __device__ virtual bool hit(const ray &r, float t_min, float t_max, HitRecord &rec) const override {
-      HitRecord temp_rec;
-      float closest_t = t_max;
-      bool object_hit = false;
+    __device__ virtual bool hit(const ray &r, float tMin, float tMax, HitRecord &rec) const override {
+      HitRecord tempRec;
+      float closestT = tMax;
+      bool objectHit = false;
 
       for (int i = 0; i<size; ++i) {
-        if(objects[i] && objects[i]->hit(r, t_min, closest_t, temp_rec)) {
-          object_hit = true;
-          closest_t = temp_rec.t;
-          rec = temp_rec;
+        if(objects[i] && objects[i]->hit(r, tMin, closestT, tempRec)) {
+          objectHit = true;
+          closestT = tempRec.t;
+          rec = tempRec;
         }    
       }
 
-      return object_hit;
+      return objectHit;
     }
 
     int idx;
     int size;
     Hittable **objects;
 };
-
-
-#endif

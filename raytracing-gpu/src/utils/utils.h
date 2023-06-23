@@ -3,7 +3,7 @@
 #include "constants.h"
 
 // Utility Functions
-__host__ __device__ static inline float degrees_to_radians(float degrees) {
+__host__ __device__ static inline float degreesToRadians(float degrees) {
   return degrees * pi / 180.0;
 }
 

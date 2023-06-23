@@ -38,15 +38,15 @@ class vec2 {
       return *this;
     }
 
-    __host__ __device__ float length_squared() const {
+    __host__ __device__ float lengthSquared() const {
       return e[0]*e[0] + e[1]*e[1];
     }
     
     __host__ __device__ float length() const {
-      return sqrt(length_squared());
+      return sqrt(lengthSquared());
     }
 
-    __host__ __device__ bool near_zero() {
+    __host__ __device__ bool nearZero() {
       float epsilon = 1e-8;
       return (e[0] < epsilon) && (e[1] < epsilon);
     }

@@ -12,16 +12,16 @@ struct HitRecord {
   Material *mat; 
   vec2 uv;
   float t;
-  bool front_face;
+  bool frontFace;
 
-  __device__ inline void set_face_normal(const ray &r, const vec3& outward_normal) {
-    front_face = dot(r.direction(), outward_normal) < 0; // Normal opposes r implies outward normal implies front face.
-    normal = front_face ? outward_normal : -outward_normal; 
+  __device__ inline void setFaceNormal(const ray &r, const vec3& outwardNormal) {
+    frontFace = dot(r.direction(), outwardNormal) < 0; // Normal opposes r implies outward normal implies front face.
+    normal = frontFace ? outwardNormal : -outwardNormal; 
   }
 };
 
 class Hittable {
   public:
     __host__ __device__ Hittable() {}
-    __device__ virtual bool hit(const ray &r, float t_min, float t_max, HitRecord &rec) const = 0;
+    __device__ virtual bool hit(const ray &r, float tMin, float tMax, HitRecord &rec) const = 0;
 };

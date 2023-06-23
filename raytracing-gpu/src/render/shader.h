@@ -12,9 +12,9 @@ class Shader {
     unsigned int id;
 
     Shader();
-    Shader(std::string vertex_path, std::string fragment_path);
+    Shader(std::string vertex_path, std::string fragmentPath);
 
     void use();
   private:
-    static unsigned int compile_shader(const char *shader_code, GLenum shader_type);
+    static unsigned int compileShader(const char *shaderCode, GLenum shaderType);
 };

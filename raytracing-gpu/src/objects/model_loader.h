@@ -10,9 +10,9 @@
 #include <iostream>
 
 namespace ModelLoader {
-	Model load_model(std::string path);
-	void process_node(aiNode* node, const aiScene* scene);
-	Mesh process_mesh(aiMesh* mesh, const aiScene* scene);
+	Model loadModel(std::string path);
+	void processNode(aiNode* node, const aiScene* scene);
+	Mesh processMesh(aiMesh* mesh, const aiScene* scene);
 	// inline std::vector<Texture> loadMaterialTextures(aiMaterial* material, aiTextureType textureType);
 
 	extern std::string directory;

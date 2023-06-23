@@ -1,23 +1,23 @@
 #include "dielectric.h"
 #include "../utils/rand.h"
 
-__host__ __device__ Dielectric::Dielectric(float index_of_refraction) : index_of_refraction(index_of_refraction) {}
+__host__ __device__ Dielectric::Dielectric(float indexOfRefraction) : indexOfRefraction(indexOfRefraction) {}
 __device__ bool Dielectric::scatter(const ray& r, const HitRecord& rec, color& attentuation, ray& scattered, curandState *state) const {
   attentuation = color(1, 1, 1);
-  float refraction_ratio = rec.front_face ? (1.0)/index_of_refraction : index_of_refraction;
+  float refractionRatio = rec.frontFace ? (1.0)/indexOfRefraction : indexOfRefraction;
 
-  vec3 unit_direction = unit(r.direction());
+  vec3 unitDirection = normalize(r.direction());
 
-  float cos_theta = dot(-unit_direction, rec.normal);
-  float sin_theta = sqrt(1 - cos_theta * cos_theta);
+  float cosTheta = dot(-unitDirection, rec.normal);
+  float sinTheta = sqrt(1 - cosTheta * cosTheta);
 
-  vec3 out_direction;
-  if(refraction_ratio * sin_theta > 1.0 || reflectance(cos_theta, index_of_refraction) > random_float(state)) {
-    out_direction = reflect(unit_direction, rec.normal);
+  vec3 outDirection;
+  if(refractionRatio * sinTheta > 1.0 || reflectance(cosTheta, indexOfRefraction) > randomFloat(state)) {
+    outDirection = reflect(unitDirection, rec.normal);
   } else {
-    out_direction = refract(unit_direction, rec.normal, refraction_ratio);
+    outDirection = refract(unitDirection, rec.normal, refractionRatio);
   }
 
-  scattered = ray(rec.p, out_direction);
+  scattered = ray(rec.p, outDirection);
   return true;
 }

@@ -10,195 +10,193 @@
 #include "../utils/constants.h"
 #include "../utils/rand.h"
 struct RenderHitRecord {
-  color hit_color;
-  color emit_color;
-  ray out_ray;
-  bool is_first_layer;
+  color hitColor;
+  color emitColor;
+  ray outRay;
+  bool isFirstLayer;
 };
 
 struct RenderHitLayer {
-  color hit_color;
-  color emit_color;
+  color hitColor;
+  color emitColor;
 };
 
 __device__
-float to_gamma_space(float val) {
+float toGammaSpace(float val) {
   return sqrt(clamp(val, 0.0, 0.999));
 }
 
 __global__
-void fb_render_sample_init(ray *in_rays, char *first_layer_num, int image_width, int image_height, const Camera *camera, curandState *rand_states) {
+void fbRenderLayerInit(ray *inRays, char *firstLayerNum, int imageWidth, int imageHeight, const Camera *camera, curandState *randStates) {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
 
-  if(x >= image_width || y >= image_height) return;
-  int pixel_idx = y * image_width + x;
+  if(x >= imageWidth || y >= imageHeight) return;
+  int pixelIdx = y * imageWidth + x;
 
-  curandState* local_state = &rand_states[pixel_idx];
-  float h = float(x + random_float(local_state)) / image_width;
-  float v = float(y + random_float(local_state)) / image_height;
-  in_rays[pixel_idx] = camera->get_ray(h, v, local_state);
+  curandState* localState = &randStates[pixelIdx];
+  float h = float(x + randomFloat(localState)) / imageWidth;
+  float v = float(y + randomFloat(localState)) / imageHeight;
+  inRays[pixelIdx] = camera->getRay(h, v, localState);
   
-  first_layer_num[pixel_idx] = -1;
+  firstLayerNum[pixelIdx] = -1;
 }
 
 __device__ 
-RenderHitRecord ray_color_step(const ray& in_ray, const HittableList *world, curandState* rand_state) {    
-  // Implies that the in_ray is null
-  if(in_ray.is_null_ray()) return { color(0, 0, 0), color(0, 0, 0), ray::null_ray(), false};
+RenderHitRecord rayColorStep(const ray& inRay, const HittableList *world, curandState* randState) {    
+  // Implies that the inRay is null
+  if(inRay.isNullRay()) return { color(0, 0, 0), color(0, 0, 0), ray::nullRay(), false};
   
-  const color env_color = color(0, 0, 0);
+  const color envColor = color(0, 0, 0);
   HitRecord rec;    
-  if (!world->hit(in_ray, 0.001, infinity, rec)) {
-    return { env_color, color(0, 0, 0), ray::null_ray(), true };
+  if (!world->hit(inRay, 0.001, infinity, rec)) {
+    return { envColor, color(0, 0, 0), ray::nullRay(), true };
   } else {
     color attenuation;
     ray scattered;
     color emitted = rec.mat->emit(rec);
-    if(rec.mat->scatter(in_ray, rec, attenuation, scattered, rand_state)) {
+    if(rec.mat->scatter(inRay, rec, attenuation, scattered, randState)) {
       return { attenuation, emitted, scattered, false };
     } else {
-      return { color(0, 0, 0), emitted, ray::null_ray(), true };
+      return { color(0, 0, 0), emitted, ray::nullRay(), true };
     }
   }
 }
 
 __global__
-void ray_trace_step(ray *in_rays, RenderHitLayer *render_layer, char *first_layer_num, int layer_num, int image_width, int image_height, const Camera *camera, const HittableList* world,  curandState *rand_states) {
+void rayTraceStep(ray *inRays, RenderHitLayer *renderLayer, char *firstLayerNum, int layerNum, int imageWidth, int imageHeight, const Camera *camera, const HittableList* world,  curandState *randStates) {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
 
-  if(x >= image_width || y >= image_height) return;
-  int pixel_idx = y * image_width + x;
+  if(x >= imageWidth || y >= imageHeight) return;
+  int pixelIdx = y * imageWidth + x;
   
-  RenderHitRecord hit_record = ray_color_step(in_rays[pixel_idx], world, &rand_states[pixel_idx]);
-  render_layer[pixel_idx] = { hit_record.hit_color, hit_record.emit_color };
-  in_rays[pixel_idx] = hit_record.out_ray;
-  if(hit_record.is_first_layer) {
-    first_layer_num[pixel_idx] = layer_num; 
+  RenderHitRecord hitRecord = rayColorStep(inRays[pixelIdx], world, &randStates[pixelIdx]);
+  renderLayer[pixelIdx] = { hitRecord.hitColor, hitRecord.emitColor };
+  inRays[pixelIdx] = hitRecord.outRay;
+  if(hitRecord.isFirstLayer) {
+    firstLayerNum[pixelIdx] = layerNum; 
   }
 }
 
 __global__
-void rand_state_init(int image_width, int image_height, curandState *rand_states) {
+void randStateInit(int imageWidth, int imageHeight, curandState *randStates) {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
 
-  if(x >= image_width || y >= image_height) return;
-  int pixel_idx = y * image_width + x;
+  if(x >= imageWidth || y >= imageHeight) return;
+  int pixelIdx = y * imageWidth + x;
 
-  curand_init(1984, pixel_idx, 0, &rand_states[pixel_idx]);
+  curand_init(1984, pixelIdx, 0, &randStates[pixelIdx]);
 }
 
-__global__ void combine_layers(color *prev_layers, RenderHitLayer *render_layer, char *first_layer_num, int layer_num,  int image_width, int image_height) {
+__global__ void combineLayers(color *prevLayers, RenderHitLayer *renderLayer, char *firstLayerNum, int layerNum,  int imageWidth, int imageHeight) {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
 
-  if(x >= image_width || y >= image_height) return;
-  int pixel_idx = y * image_width + x;
-  if(first_layer_num[pixel_idx] != -1) {
-    if(first_layer_num[pixel_idx] == layer_num) {
-      prev_layers[pixel_idx] = render_layer[pixel_idx].hit_color + render_layer[pixel_idx].emit_color;
-    } else if(first_layer_num[pixel_idx] > layer_num) {
-      prev_layers[pixel_idx] = prev_layers[pixel_idx] * render_layer[pixel_idx].hit_color + render_layer[pixel_idx].emit_color;
+  if(x >= imageWidth || y >= imageHeight) return;
+  int pixelIdx = y * imageWidth + x;
+  if(firstLayerNum[pixelIdx] != -1) {
+    if(firstLayerNum[pixelIdx] == layerNum) {
+      prevLayers[pixelIdx] = renderLayer[pixelIdx].hitColor + renderLayer[pixelIdx].emitColor;
+    } else if(firstLayerNum[pixelIdx] > layerNum) {
+      prevLayers[pixelIdx] = prevLayers[pixelIdx] * renderLayer[pixelIdx].hitColor + renderLayer[pixelIdx].emitColor;
     }
   }
 }
 
 __global__
-void accumulate_sample(color *fb, int num_samples, color *fb_sample, int image_width, int image_height) {
+void accumulateSamples(color *fb, int numSamples, color *fbSample, int imageWidth, int imageHeight) {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
 
-  if(x >= image_width || y >= image_height) return;
-  int pixel_idx = y * image_width + x;
-  fb[pixel_idx] += fb_sample[pixel_idx] / num_samples;
+  if(x >= imageWidth || y >= imageHeight) return;
+  int pixelIdx = y * imageWidth + x;
+  fb[pixelIdx] += fbSample[pixelIdx] / numSamples;
 }
 
 __global__
-void fb_to_gamma_space(color *fb, int image_width, int image_height) {
+void fbToGammaSpace(color *fb, int imageWidth, int imageHeight) {
   int x = blockIdx.x * blockDim.x + threadIdx.x;
   int y = blockIdx.y * blockDim.y + threadIdx.y;
 
-  if(x >= image_width || y >= image_height) return;
-  int pixel_idx = y * image_width + x;
-  color &c = fb[pixel_idx];
-  fb[pixel_idx] = color(to_gamma_space(c.x()), to_gamma_space(c.y()), to_gamma_space(c.z()));
+  if(x >= imageWidth || y >= imageHeight) return;
+  int pixelIdx = y * imageWidth + x;
+  color &c = fb[pixelIdx];
+  fb[pixelIdx] = color(toGammaSpace(c.x()), toGammaSpace(c.y()), toGammaSpace(c.z()));
 }
 
 class RayRenderer {
   public:
-    RayRenderer(int image_width, int image_height) : image_width(image_width), image_height(image_height) {  
-      int num_pixels = image_width * image_height;
-      auto fb_size = num_pixels * sizeof(color);
+    RayRenderer(int imageWidth, int imageHeight) : imageWidth(imageWidth), imageHeight(imageHeight) {  
+      int numPixels = imageWidth * imageHeight;
+      auto fbSize = numPixels * sizeof(color);
 
-      checkCudaErrors(cudaMallocManaged(&fb, fb_size));
-      checkCudaErrors(cudaMallocManaged(&fb_sample, fb_size));
-      checkCudaErrors(cudaMallocManaged(&first_layer_num, num_pixels * sizeof(char)));
-      checkCudaErrors(cudaMallocManaged(&in_rays, num_pixels * sizeof(ray)));
-      checkCudaErrors(cudaMallocManaged(&render_layer, num_pixels * sizeof(RenderHitLayer) * max_depth));
-      checkCudaErrors(cudaMallocManaged(&rand_states, sizeof(curandState) * num_pixels));
+      checkCudaErrors(cudaMallocManaged(&fb, fbSize));
+      checkCudaErrors(cudaMallocManaged(&fbSample, fbSize));
+      checkCudaErrors(cudaMallocManaged(&firstLayerNum, numPixels * sizeof(char)));
+      checkCudaErrors(cudaMallocManaged(&inRays, numPixels * sizeof(ray)));
+      checkCudaErrors(cudaMallocManaged(&renderLayer, numPixels * sizeof(RenderHitLayer) * maxDepth));
+      checkCudaErrors(cudaMallocManaged(&randStates, sizeof(curandState) * numPixels));
       checkCudaErrors(cudaDeviceSynchronize());
     }
 
-    RayRenderer(int image_width, float aspect_ratio) : RayRenderer(image_width, static_cast<int>(image_width / aspect_ratio)) {}
+    RayRenderer(int imageWidth, float aspectRation) : RayRenderer(imageWidth, static_cast<int>(imageWidth / aspectRation)) {}
 
-    int get_image_width() const { return image_width; };
-    int get_image_height() const { return image_height; };
+    int getImageWidth() const { return imageWidth; };
+    int getImageHeight() const { return imageHeight; };
 
-    void render_fb_sample(int sample_num, const Camera *camera, const HittableList *world) const {
-      int num_pixels = image_width * image_height;
+    void renderFbSamples(int sampleNum, const Camera *camera, const HittableList *world) const {
+      int numPixels = imageWidth * imageHeight;
 
-      int thread_dim = 8;
-      dim3 threads(thread_dim, thread_dim);
-      dim3 blocks((image_width + thread_dim - 1)/thread_dim, (image_height + thread_dim - 1)/thread_dim);
+      int threadDim = 8;
+      dim3 threads(threadDim, threadDim);
+      dim3 blocks((imageWidth + threadDim - 1)/threadDim, (imageHeight + threadDim - 1)/threadDim);
 
-      fb_render_sample_init<<<blocks, threads>>>(in_rays, first_layer_num, image_width, image_height, camera, rand_states);
+      fbRenderLayerInit<<<blocks, threads>>>(inRays, firstLayerNum, imageWidth, imageHeight, camera, randStates);
       checkCudaErrors(cudaDeviceSynchronize()); 
 
-      for(int layer_num = 0; layer_num<max_depth; ++layer_num) {
-        ray_trace_step<<<blocks, threads>>>(in_rays, &render_layer[layer_num * num_pixels], first_layer_num, layer_num, image_width, image_height, camera, world, rand_states);
+      for(int layerNum = 0; layerNum<maxDepth; ++layerNum) {
+        rayTraceStep<<<blocks, threads>>>(inRays, &renderLayer[layerNum * numPixels], firstLayerNum, layerNum, imageWidth, imageHeight, camera, world, randStates);
         checkCudaErrors(cudaDeviceSynchronize());
       }
 
-      for(int layer_num = max_depth - 1; layer_num >= 0; --layer_num) {
-        combine_layers<<<blocks, threads>>>(fb_sample, &render_layer[layer_num * num_pixels], first_layer_num, layer_num, image_width, image_height);
+      for(int layerNum = maxDepth - 1; layerNum >= 0; --layerNum) {
+        combineLayers<<<blocks, threads>>>(fbSample, &renderLayer[layerNum * numPixels], firstLayerNum, layerNum, imageWidth, imageHeight);
         checkCudaErrors(cudaDeviceSynchronize());
       }
 
-      accumulate_sample<<<blocks, threads>>>(fb, num_samples, fb_sample, image_width, image_height);
+      accumulateSamples<<<blocks, threads>>>(fb, numSamples, fbSample, imageWidth, imageHeight);
       checkCudaErrors(cudaDeviceSynchronize());
     }
 
-    color* render_fb(const Camera *camera, const HittableList *world) const {
-      int num_pixels = image_width * image_height;
+    color* renderFb(const Camera *camera, const HittableList *world) const {
+      int threadDim = 8;
+      dim3 threads(threadDim, threadDim);
+      dim3 blocks((imageWidth + threadDim - 1)/threadDim, (imageHeight + threadDim - 1)/threadDim);
 
-      int thread_dim = 8;
-      dim3 threads(thread_dim, thread_dim);
-      dim3 blocks((image_width + thread_dim - 1)/thread_dim, (image_height + thread_dim - 1)/thread_dim);
-
-      rand_state_init<<<blocks, threads>>>(image_width, image_height, rand_states);
+      randStateInit<<<blocks, threads>>>(imageWidth, imageHeight, randStates);
       checkCudaErrors(cudaDeviceSynchronize()); 
 
-      for(int sample_num = 0; sample_num<num_samples; ++sample_num) {
-        render_fb_sample(sample_num, camera, world);
+      for(int sampleNum = 0; sampleNum<numSamples; ++sampleNum) {
+        renderFbSamples(sampleNum, camera, world);
       }
 
-      fb_to_gamma_space<<<blocks, threads>>>(fb, image_width, image_height);
+      fbToGammaSpace<<<blocks, threads>>>(fb, imageWidth, imageHeight);
       checkCudaErrors(cudaDeviceSynchronize()); 
 
       return fb;
     }
   private:
     color *fb;
-    color *fb_sample;
-    ray *in_rays;
-    char *first_layer_num;
-    RenderHitLayer *render_layer;
-    curandState *rand_states;
+    color *fbSample;
+    ray *inRays;
+    char *firstLayerNum;
+    RenderHitLayer *renderLayer;
+    curandState *randStates;
 
-    int image_width;
-    int image_height;    
-    const int max_depth = 10;
-    const int num_samples = 10;
+    int imageWidth;
+    int imageHeight;    
+    const int maxDepth = 10;
+    const int numSamples = 10;
 };

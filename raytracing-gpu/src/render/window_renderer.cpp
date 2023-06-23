@@ -3,7 +3,7 @@
 
 WindowRenderer::WindowRenderer() {
   // Init shader
-  window_shader = Shader("shaders/vertex_shader.vs", "shaders/fragment_shader.fs");
+  windowShader = Shader("shaders/vertex_shader.vs", "shaders/fragment_shader.fs");
   
   // Init VAO
   static float vertices[] = {
@@ -37,7 +37,7 @@ WindowRenderer::WindowRenderer() {
   glEnableVertexAttribArray(1);  
 }
 
-unsigned int WindowRenderer::gen_scene_texture(color *scene, int scene_width, int scene_height) {
+unsigned int WindowRenderer::genSceneTexture(color *scene, int sceneWidth, int sceneHeight) {
   unsigned int texture;
   glGenTextures(1, &texture);
   glBindTexture(GL_TEXTURE_2D, texture);
@@ -47,23 +47,23 @@ unsigned int WindowRenderer::gen_scene_texture(color *scene, int scene_width, in
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-  unsigned char *data = get_char_array_from_color_array(scene, scene_height * scene_width);
+  unsigned char *data = getCharArrayFromColorArray(scene, sceneHeight * sceneWidth);
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1 );
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, scene_width, scene_height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, sceneWidth, sceneHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
   glGenerateMipmap(GL_TEXTURE_2D);
 
   return texture;
 }
 
-void WindowRenderer::render_scene_to_window(unsigned int scene_texture) {
-  window_shader.use();
-  glBindTexture(GL_TEXTURE_2D, scene_texture);
+void WindowRenderer::renderSceneToWindow(unsigned int sceneTexture) {
+  windowShader.use();
+  glBindTexture(GL_TEXTURE_2D, sceneTexture);
   glBindVertexArray(VAO);
   glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
 
-unsigned char *WindowRenderer::get_char_array_from_color_array(color *colors, int size) {
+unsigned char *WindowRenderer::getCharArrayFromColorArray(color *colors, int size) {
   unsigned char *char_colors = new unsigned char[size * 3];
   for(int i = 0; i<size; ++i) {
     char_colors[i * 3 + 0] = static_cast<unsigned char>(colors[i].x() * 255);

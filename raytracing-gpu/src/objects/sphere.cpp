@@ -3,12 +3,12 @@
 __host__ __device__ Sphere::Sphere() {}
 __host__ __device__ Sphere::Sphere(point3 center, float radius, Material* mat) : center(center), radius(radius), mat(mat) {}
 
-__device__ bool Sphere::hit(const ray &r, float t_min, float t_max, HitRecord &rec) const {
+__device__ bool Sphere::hit(const ray &r, float tMin, float tMax, HitRecord &rec) const {
   vec3 oc = r.origin() - center;
-  float a = r.direction().length_squared();
-  float half_b = dot(r.direction(), oc);
-  float c = oc.length_squared() - radius * radius;
-  float discriminant = half_b * half_b - a*c;
+  float a = r.direction().lengthSquared();
+  float halfB = dot(r.direction(), oc);
+  float c = oc.lengthSquared() - radius * radius;
+  float discriminant = halfB * halfB - a*c;
 
   if(discriminant < 0) {
     return false;
@@ -17,16 +17,16 @@ __device__ bool Sphere::hit(const ray &r, float t_min, float t_max, HitRecord &r
   float sqrtd = sqrt(discriminant);
   
 
-  float t = (-half_b - sqrtd) / a;
-  if(t < t_min || t > t_max) {
-    t = (-half_b + sqrtd) / a;
-    if(t < t_min || t > t_max) return false;
+  float t = (-halfB - sqrtd) / a;
+  if(t < tMin || t > tMax) {
+    t = (-halfB + sqrtd) / a;
+    if(t < tMin || t > tMax) return false;
   }
 
   rec.t = t;
   rec.p = r.at(t);
-  vec3 outward_normal = (rec.p - center) / radius;
-  rec.set_face_normal(r, outward_normal);
+  vec3 outwardNormal = (rec.p - center) / radius;
+  rec.setFaceNormal(r, outwardNormal);
   rec.mat = mat;
 
   return true;

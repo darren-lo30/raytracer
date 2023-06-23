@@ -1,7 +1,7 @@
 #pragma once
 
-#define checkCudaErrors(val) check_cuda( (val), #val, __FILE__, __LINE__ )
+#define checkCudaErrors(val) checkCuda( (val), #val, __FILE__, __LINE__ )
 
 #include <iostream>
 
-void check_cuda(cudaError_t result, char const *const func, const char *const file, int const line);
+void checkCuda(cudaError_t result, char const *const func, const char *const file, int const line);

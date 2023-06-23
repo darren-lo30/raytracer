@@ -1,5 +1,4 @@
-#ifndef MATERIAL_H
-#define MATERIAL_H
+#pragma once
 
 #include "../math/vec3.h"
 #include "../math/ray.h"
@@ -14,5 +13,3 @@ class Material {
       return color(0, 0, 0);
     };
 };
-
-#endif

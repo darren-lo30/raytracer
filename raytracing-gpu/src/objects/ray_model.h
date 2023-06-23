@@ -17,22 +17,22 @@
 class RayMesh : public Hittable {
   public:
     __host__ __device__ RayMesh();
-    __host__ __device__ RayMesh(int num_triangles, Triangle **triangles);
-    __device__ virtual bool hit(const ray &r, float t_min, float t_max, HitRecord &rec) const override;
+    __host__ __device__ RayMesh(int numTriangles, Triangle **triangles);
+    __device__ virtual bool hit(const ray &r, float tMin, float tMax, HitRecord &rec) const override;
     
-    int num_triangles;
+    int numTriangles;
     Triangle **triangles;
 };
 
 class RayModel : public Hittable {
   public:
     __host__ __device__ RayModel();
-    __host__ __device__ RayModel(int num_meshes, RayMesh **meshes);
-    __device__ virtual bool hit(const ray &r, float t_min, float t_max, HitRecord &rec) const override;
+    __host__ __device__ RayModel(int numMeshes, RayMesh **meshes);
+    __device__ virtual bool hit(const ray &r, float tMin, float tMax, HitRecord &rec) const override;
 
-    int num_meshes;
+    int numMeshes;
     RayMesh **meshes;
 };
 
-RayMesh *from_mesh(const Mesh &model);
-RayModel *from_model(const Model &model);
+RayMesh *fromMesh(const Mesh &model);
+RayModel *fromModel(const Model &model);

@@ -43,15 +43,15 @@ class vec3 {
       return *this;
     }
 
-    __host__ __device__ float length_squared() const {
+    __host__ __device__ float lengthSquared() const {
       return e[0]*e[0] + e[1]*e[1] + e[2]*e[2];
     }
     
     __host__ __device__ float length() const {
-      return sqrt(length_squared());
+      return sqrt(lengthSquared());
     }
 
-    __host__ __device__ bool near_zero() const {
+    __host__ __device__ bool nearZero() const {
       float epsilon = 1e-8;
       return (e[0] < epsilon) && (e[1] < epsilon) && (e[2] < epsilon);
     }
@@ -101,14 +101,14 @@ __host__ __device__ static inline vec3 reflect(const vec3 &v, const vec3 &axis) 
   return v - 2*dot(v, axis)*axis;
 }
 
-__host__ __device__ static inline vec3 unit(const vec3 &u) {
+__host__ __device__ static inline vec3 normalize(const vec3 &u) {
   return u / u.length();
 }
 
-__host__ __device__ static inline vec3 refract(const vec3& unit_v, const vec3& n, float etai_over_etat) {
-  float cos_theta = dot(-unit_v, n);
-  vec3 r_perpendicular = etai_over_etat * (unit_v + cos_theta * n);
-  vec3 r_parallel = -sqrt(1 - r_perpendicular.length_squared()) * n;
+__host__ __device__ static inline vec3 refract(const vec3& unitV, const vec3& n, float refractionRatio) {
+  float cosTheta = dot(-unitV, n);
+  vec3 rPerpendicular = refractionRatio * (unitV + cosTheta * n);
+  vec3 rParallel = -sqrt(1 - rPerpendicular.lengthSquared()) * n;
 
-  return r_perpendicular + r_parallel;
+  return rPerpendicular + rParallel;
 }

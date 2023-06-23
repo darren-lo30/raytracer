@@ -7,10 +7,10 @@
 
 class Dielectric : public Material {
   public:
-    __host__ __device__ Dielectric(float index_of_refraction);
+    __host__ __device__ Dielectric(float indexOfRefraction);
     __device__ virtual bool scatter(const ray& r, const HitRecord& rec, color& attentuation, ray& scattered, curandState *state) const override;
   private:
-    float index_of_refraction;
+    float indexOfRefraction;
 
     __device__ static float reflectance(float cosine , float ir) {
       float r0 = (1 - ir) / (1 + ir);

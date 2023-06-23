@@ -59,7 +59,7 @@ bool Window::isClosed()  const {
 
 /* Getters and setters */
 
-GLFWwindow *Window::get_id() const {
+GLFWwindow *Window::getId() const {
 	return id;
 }
 

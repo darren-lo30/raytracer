@@ -2,7 +2,7 @@
 #include <set>
 #include <memory>
 #include "entity.h"
-#include "component.h"
+#include "../components/component.h"
 #include "event_manager.h"
 
 class World;

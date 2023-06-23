@@ -39,7 +39,7 @@ public:
 	bool isClosed() const;
 	void close() const;
 
-	GLFWwindow *get_id() const;
+	GLFWwindow *getId() const;
 
 	unsigned int getWidth() const ;
 	unsigned int getHeight() const;

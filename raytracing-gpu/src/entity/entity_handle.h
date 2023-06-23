@@ -9,7 +9,7 @@ private:
 	World* parentWorld;
 public: 
 	EntityHandle() {
-		id = NULL;
+		id = 0;
 		parentWorld = NULL;
 	}
 
