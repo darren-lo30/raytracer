@@ -1,8 +1,0 @@
-[
-{
-  "directory": "/home/darren/Documents/raytracing/raytracing-cpu/build",
-  "command": "/usr/bin/clang++ -g -o CMakeFiles/raytracer-cpu.dir/src/main.cpp.o -c /home/darren/Documents/raytracing/raytracing-cpu/src/main.cpp",
-  "file": "/home/darren/Documents/raytracing/raytracing-cpu/src/main.cpp",
-  "output": "CMakeFiles/raytracer-cpu.dir/src/main.cpp.o"
-}
-]
